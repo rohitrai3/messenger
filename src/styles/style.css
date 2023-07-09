@@ -80,6 +80,54 @@ button {
   margin-bottom: 24px;
 }
 
+.contacts-panel {
+  width: 342px;
+  height: 370px;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  margin-top: 36px;
+  border: 1px solid var(--md-sys-color-outline-light);
+  border-radius: 12px;
+}
+
+.contacts-tabs {
+  width: 310px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -20px;
+}
+
+.contacts-tabs svg {
+  margin-right: 8px;
+  fill: var(--md-sys-color-on-secondary-container-light);
+}
+
+.contacts-title {
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  border: 1px solid var(--md-sys-color-outline-light);
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+}
+
+.add-new-title {
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  border: 1px solid var(--md-sys-color-outline-light);
+  border-left: none;
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+}
+
 @media (prefers-color-scheme: dark) {
   .portfolio-button {
     color: black;
@@ -87,6 +135,22 @@ button {
   }
 
   .spinner {
-    fill: var(--md-sys-color-primary-dark)
+    fill: var(--md-sys-color-primary-dark);
+  }
+
+  .contacts-panel {
+    border: 1px solid var(--md-sys-color-outline-dark);
+  }
+
+  .contacts-title {
+    border: 1px solid var(--md-sys-color-outline-dark);
+  }
+
+  .add-new-title {
+    border: 1px solid var(--md-sys-color-outline-dark);
+  }
+
+  .contacts-tabs svg {
+    fill: var(--md-sys-color-on-secondary-container-dark);
   }
 }
