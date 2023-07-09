@@ -1,3 +1,48 @@
 body {
   margin: 0px;
 }
+
+.sign-in {
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.sign-in img {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.sign-in-button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  padding-right: 24px;
+  border-radius: 100px;
+  border: none;
+  margin-top: 100px;
+}
+
+.portfolio-button {
+  height: 40px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-radius: 100px;
+  border: none;
+  color: white;
+  background-color: black;
+  position: fixed;
+  bottom: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .portfolio-button {
+    color: black;
+    background-color: white;
+  }
+}
