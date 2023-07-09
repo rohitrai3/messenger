@@ -1,9 +1,14 @@
 import authenticate from "../services/authentication";
 import google from "../assets/google.svg";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserState, setEmail, setName } from "../store/slices/userSlice";
+import { useAppDispatch } from "../hooks/hooks";
 
 export default function SignIn() {
   const [authenticating, setAuthenticating] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const getSignInButton = () => {
     return authenticating ? (
@@ -29,7 +34,10 @@ export default function SignIn() {
 
   const signIn = async () => {
     setAuthenticating(true);
-    await authenticate();
+    const user: UserState = await authenticate();
+    dispatch(setName(user.name));
+    dispatch(setEmail(user.email));
+    navigate("/home");
     setAuthenticating(false);
   };
 

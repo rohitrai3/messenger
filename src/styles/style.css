@@ -57,6 +57,29 @@ button {
   100% { transform: rotate(360deg); }
 }
 
+.home {
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 100px;
+  margin-top: 16px;
+}
+
+.horizontal-line {
+  width: 358px;
+  height: 1px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
 @media (prefers-color-scheme: dark) {
   .portfolio-button {
     color: black;
