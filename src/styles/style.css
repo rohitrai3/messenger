@@ -15,13 +15,28 @@ button {
   align-items: center;
 }
 
-.sign-in-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
+.sign-in-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 100px;
 }
 
-.sign-in-button {
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sign-in-form input {
+  width: 226px;
+  height: 36px;
+  padding-left: 24px;
+  border: 1px solid var(--md-sys-color-secondary-light);
+  border-radius: 100px;
+}
+
+.sign-in-form button {
   height: 40px;
   display: flex;
   align-items: center;
@@ -29,7 +44,13 @@ button {
   padding-right: 24px;
   border-radius: 100px;
   border: none;
-  margin-top: 100px;
+  margin-top: 16px;
+}
+
+.sign-in-form svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
 }
 
 .portfolio-button {
@@ -48,7 +69,6 @@ button {
   width: 40px;
   height: 40px;
   fill: var(--md-sys-color-primary-light);
-  margin-top: 100px;
   animation: spin 1s linear infinite;
 }
 
@@ -84,8 +104,9 @@ button {
   width: 342px;
   height: 370px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: start;
+  align-items: center;
   margin-top: 36px;
   border: 1px solid var(--md-sys-color-outline-light);
   border-radius: 12px;
@@ -129,6 +150,68 @@ button {
   border-bottom-right-radius: 100px;
 }
 
+.contacts-content {
+  flex: 1;
+}
+
+.search-contact {
+  width: 310px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.search-contact input {
+  width: 226px;
+  height: 36px;
+  padding-left: 24px;
+  border: 1px solid var(--md-sys-color-secondary-light);
+  border-radius: 100px;
+}
+
+.primary-action-icon {
+  width: 24px;
+  height: 24px;
+  padding: 8px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.search-contact svg {
+  fill: var(--md-sys-color-on-primary-light);
+}
+
+.searched-contact {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.user-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  margin-right: 16px;
+}
+
+.secondary-action-icon {
+  width: 24px;
+  height: 24px;
+  padding: 8px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.searched-contact svg {
+  fill: var(--md-sys-color-on-secondary-light);
+}
+
 @media (prefers-color-scheme: dark) {
   .portfolio-button {
     color: black;
@@ -153,5 +236,17 @@ button {
 
   .contacts-tabs svg {
     fill: var(--md-sys-color-on-secondary-container-dark);
+  }
+
+  .search-contact input {
+    border: 1px solid var(--md-sys-color-secondary-dark);
+  }
+  
+  .search-contact svg {
+    fill: var(--md-sys-color-on-primary-light);
+  }
+  
+  .searched-contact svg {
+    fill: var(--md-sys-color-on-secondary-light);
   }
 }

@@ -8,6 +8,8 @@ const firebaseConfig = {
   messagingSenderId: "821911262281",
   appId: "1:821911262281:web:3df124b8ebc485a1c89b98",
   measurementId: "G-NVYG3C8LZ1",
+  databaseURL:
+    "https://messenger-f035e-default-rtdb.asia-southeast1.firebasedatabase.app/",
 };
 
 const app = initializeApp(firebaseConfig);

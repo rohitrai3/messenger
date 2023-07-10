@@ -1,17 +1,26 @@
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import app from "./firebase";
 import { UserState } from "../store/slices/userSlice";
+import { getUsername } from "./database";
 
 const provider = new GoogleAuthProvider();
 const auth = getAuth(app);
 
 const authenticate = async () => {
-  const user: UserState = { name: "Unknown", email: "Unknown" };
+  const user: UserState = {
+    uid: "Unknown",
+    username: "Unknown",
+    name: "Unknown",
+    photoUrl: "Unknown",
+  };
   await signInWithPopup(auth, provider)
-    .then((response) => {
-      console.log("response: ", response);
-      (user.name = response.user.displayName!),
-        (user.email = response.user.email!);
+    .then(async (response) => {
+      const uid = response.user.uid;
+      const name = response.user.displayName!;
+      const photoUrl = response.user.photoURL!;
+      user.uid = uid;
+      user.name = name;
+      user.photoUrl = photoUrl;
     })
     .catch((error) => {
       console.log("Authentication error: ", error);

@@ -1,27 +1,27 @@
-import { useState } from "react";
-import { useAppSelector } from "../hooks/hooks";
-import { ContactTab } from "../enums/enums";
+import { ReactElement, useEffect, useState } from "react";
+import { useAppSelector } from "../../hooks/hooks";
+import { ContactTab } from "../../common/enums";
+import { useNavigate } from "react-router-dom";
+import AddNewContactTab from "./AddNewContactTab";
+import { TickIcon } from "../../common/icons";
 
 export default function Home() {
   const userName = useAppSelector((state) => state.user.name);
+  const userPhotoUrl = useAppSelector((state) => state.user.photoUrl);
+  const userUsername = useAppSelector((state) => state.user.username);
   const [selectedTab, setSelectedTab] = useState<ContactTab>(
     ContactTab.CONTACTS
   );
+  const navigate = useNavigate();
+
+  const contactsTabContent = <h1>Contacts</h1>;
+
+  const [selectedTabContent, setSelectedTabContent] =
+    useState<ReactElement>(contactsTabContent);
 
   const getSelectionIcon = (tab: ContactTab) => {
     if (tab === selectedTab) {
-      return (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 0 24 24"
-          width="24px"
-          fill="#000000"
-        >
-          <path d="M0 0h24v24H0z" fill="none" />
-          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" />
-        </svg>
-      );
+      return TickIcon;
     }
   };
 
@@ -40,16 +40,28 @@ export default function Home() {
         setSelectedTab(ContactTab.ADD_NEW);
         break;
     }
+    setSelectedTabContent(getTabContent(tab));
   };
+
+  const getTabContent = (tab: ContactTab) => {
+    switch (tab) {
+      case ContactTab.CONTACTS:
+        return contactsTabContent;
+      case ContactTab.ADD_NEW:
+        return <AddNewContactTab />;
+    }
+  };
+
+  useEffect(() => {
+    if (userName === "Unknown") navigate("/");
+  });
 
   return (
     <div className="home background">
-      <div className="display-large on-background-text">Hello!</div>
-      <img
-        className="profile-photo"
-        src="https://raw.githubusercontent.com/rohitrai3/resources/main/images/profile.jpg"
-      />
+      <div className="display-small on-background-text">Hello!</div>
+      <img className="profile-photo" src={userPhotoUrl} />
       <div className="display-medium on-background-text">{userName}</div>
+      <div className="label-large on-background-text">@{userUsername}</div>
       <div className="horizontal-line outline-variant" />
       <div className="headline-small on-background-text">
         Who do you want to chat with?
@@ -73,6 +85,7 @@ export default function Home() {
             {getSelectionIcon(ContactTab.ADD_NEW)}Add new
           </div>
         </div>
+        <div className="contacts-content">{selectedTabContent}</div>
       </div>
     </div>
   );
