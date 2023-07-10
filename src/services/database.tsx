@@ -1,4 +1,4 @@
-import { SearchUserResponse } from "../common/types";
+import { UserData } from "../common/types";
 import app from "./firebase";
 import { child, get, getDatabase, ref, set } from "firebase/database";
 
@@ -6,6 +6,7 @@ const database = getDatabase(app);
 
 export const getUsername = async (uid: string) => {
   var username: string = "Unknown";
+
   await get(child(ref(database), `users/${uid}`))
     .then((snapshot) => {
       if (snapshot.exists()) {
@@ -17,14 +18,17 @@ export const getUsername = async (uid: string) => {
     .catch((error) => {
       console.log("Error while fetching user: ", error);
     });
+
   return username;
 };
 
 export const getUserData = async (username: string) => {
-  const userData: SearchUserResponse = {
+  const userData: UserData = {
+    username: username,
     name: "Unknown",
     photoUrl: "Unknown",
   };
+
   await get(child(ref(database), `users/${username}`))
     .then((snapshot) => {
       if (snapshot.exists()) {
@@ -37,7 +41,30 @@ export const getUserData = async (username: string) => {
     .catch((error) => {
       console.log("Error while fetching user data: ", error);
     });
+
   return userData;
+};
+
+export const getConnectionRequests = async (username: string) => {
+  const usersData: UserData[] = [];
+
+  await get(child(ref(database), `requests/${username}`))
+    .then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const usernames: string[] = snapshot.val();
+        for (const username of usernames) {
+          const userData = await getUserData(username);
+          usersData.push(userData);
+        }
+      } else {
+        console.log("Connection requests does not exist: ", username);
+      }
+    })
+    .catch((error) => {
+      console.log("Error while fetching connection requests: ", error);
+    });
+
+  return usersData;
 };
 
 export const createUser = async (
@@ -90,6 +117,7 @@ export const createConnectionRequest = async (
   requestee: string
 ) => {
   const requests: string[] = [requester];
+
   await get(child(ref(database), `requests/${requestee}`)).then(
     async (snapshot) => {
       if (snapshot.exists()) {
@@ -97,6 +125,12 @@ export const createConnectionRequest = async (
         fetchedRequests.forEach((request) => {
           requests.push(request);
         });
+      } else {
+        console.log(
+          "Connection requests does not exist: ",
+          requester,
+          requestee
+        );
       }
       await set(ref(database, `requests/${requestee}`), requests)
         .then(() =>

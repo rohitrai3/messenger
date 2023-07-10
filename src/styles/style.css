@@ -187,13 +187,13 @@ button {
   align-items: center;
 }
 
-.user-info {
+.searched-contact-user-info {
   display: flex;
   align-items: center;
   flex: 1;
 }
 
-.user-info img {
+.searched-contact-user-info img {
   width: 60px;
   height: 60px;
   border-radius: 100px;
@@ -208,8 +208,35 @@ button {
   cursor: pointer;
 }
 
-.searched-contact svg {
+.secondary-action-icon svg {
   fill: var(--md-sys-color-on-secondary-light);
+}
+
+.connection-requests {
+  margin-top: 20px;
+}
+
+.connection-requests-heading {
+  padding-top: 4px;
+  border-top: 1px solid var(--md-sys-color-outline-variant-light);
+  margin-bottom: 16px;
+}
+
+.connection-requests-user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.connection-requests-user-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  margin-right: 16px;
+}
+
+.connection-requests-user-name {
+  flex: 1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -243,10 +270,10 @@ button {
   }
   
   .search-contact svg {
-    fill: var(--md-sys-color-on-primary-light);
+    fill: var(--md-sys-color-on-primary-dark);
   }
   
-  .searched-contact svg {
-    fill: var(--md-sys-color-on-secondary-light);
+  .secondary-action-icon svg {
+    fill: var(--md-sys-color-on-secondary-dark);
   }
 }

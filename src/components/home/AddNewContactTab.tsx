@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { SearchUserResponse } from "../../common/types";
+import { UserData } from "../../common/types";
 import { createConnectionRequest, getUserData } from "../../services/database";
 import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/icons";
 import { useAppSelector } from "../../hooks/hooks";
+import ConnectionRequests from "./ConnectionRequests";
 
 export default function AddNewContactTab() {
   const [username, setUsername] = useState<string>("");
   const [searching, setSearching] = useState<boolean>(false);
-  const [searchedUser, setSearchedUser] = useState<SearchUserResponse>();
+  const [searchedUser, setSearchedUser] = useState<UserData>();
   const [sendingConnectionRequest, setSendingConnectinRequest] =
     useState<boolean>(false);
   const userUsername = useAppSelector((state) => state.user.username);
@@ -21,8 +22,8 @@ export default function AddNewContactTab() {
 
   const searchUser = async () => {
     setSearching(true);
-    const searchUserResponse = await getUserData(username);
-    setSearchedUser(searchUserResponse);
+    const userData = await getUserData(username);
+    setSearchedUser(userData);
     setSearching(false);
   };
 
@@ -53,10 +54,11 @@ export default function AddNewContactTab() {
     if (searchedUser) {
       return (
         <div className="searched-contact">
-          <div className="user-info">
+          <div className="searched-contact-user-info on-primary-container-text">
             <img src={searchedUser.photoUrl} />
-            <div className="headline-small on-primary-container-text">
-              {searchedUser.name}
+            <div className="searched-contact-user-name">
+              <div className="headline-small">{searchedUser.name}</div>
+              <div className="label-medium">@{searchedUser.username}</div>
             </div>
           </div>
           {getSendConnectionRequestButton()}
@@ -91,6 +93,7 @@ export default function AddNewContactTab() {
         {getSearchButton()}
       </div>
       {getSearchedContact()}
+      <ConnectionRequests />
     </div>
   );
 }
