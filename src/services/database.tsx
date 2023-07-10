@@ -84,3 +84,31 @@ export const createContact = async (username: string) => {
       console.log("Error while fetching contact: ", error);
     });
 };
+
+export const createConnectionRequest = async (
+  requester: string,
+  requestee: string
+) => {
+  const requests: string[] = [requester];
+  await get(child(ref(database), `requests/${requestee}`)).then(
+    async (snapshot) => {
+      if (snapshot.exists()) {
+        const fetchedRequests: string[] = snapshot.val();
+        fetchedRequests.forEach((request) => {
+          requests.push(request);
+        });
+      }
+      await set(ref(database, `requests/${requestee}`), requests)
+        .then(() =>
+          console.log(
+            "Connection request saved successfully: ",
+            requester,
+            requestee
+          )
+        )
+        .catch((error) =>
+          console.log("Error while saving connection request: ", error)
+        );
+    }
+  );
+};

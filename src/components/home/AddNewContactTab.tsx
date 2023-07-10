@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { SearchUserResponse } from "../../common/types";
-import { getUserData } from "../../services/database";
+import { createConnectionRequest, getUserData } from "../../services/database";
 import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/icons";
+import { useAppSelector } from "../../hooks/hooks";
 
 export default function AddNewContactTab() {
   const [username, setUsername] = useState<string>("");
   const [searching, setSearching] = useState<boolean>(false);
   const [searchedUser, setSearchedUser] = useState<SearchUserResponse>();
+  const [sendingConnectionRequest, setSendingConnectinRequest] =
+    useState<boolean>(false);
+  const userUsername = useAppSelector((state) => state.user.username);
 
   const updateUsername = () => {
     const searchUserInputValue = (
@@ -22,6 +26,29 @@ export default function AddNewContactTab() {
     setSearching(false);
   };
 
+  const sendConnectionRequest = async () => {
+    setSendingConnectinRequest(true);
+    await createConnectionRequest(userUsername, username);
+    setSendingConnectinRequest(false);
+  };
+
+  const sendConnectionRequestButton = () => {
+    return (
+      <div
+        className="secondary-action-icon secondary"
+        onClick={() => sendConnectionRequest()}
+      >
+        {TickIcon}
+      </div>
+    );
+  };
+
+  const getSendConnectionRequestButton = () => {
+    return sendingConnectionRequest
+      ? SpinnerIcon
+      : sendConnectionRequestButton();
+  };
+
   const getSearchedContact = () => {
     if (searchedUser) {
       return (
@@ -32,7 +59,7 @@ export default function AddNewContactTab() {
               {searchedUser.name}
             </div>
           </div>
-          <div className="secondary-action-icon secondary">{TickIcon}</div>
+          {getSendConnectionRequestButton()}
         </div>
       );
     }
