@@ -1,8 +1,51 @@
-import { useNavigate } from "react-router-dom";
-import { BeforeIcon, SendIcon } from "../../common/icons";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BeforeIcon, SendIcon, SpinnerIcon } from "../../common/icons";
+import { useState } from "react";
+import { createMessage } from "../../services/database";
+import { useAppSelector } from "../../hooks/hooks";
+import { Message } from "../../common/types";
 
 export default function ChatFooter() {
   const navigate = useNavigate();
+  const [messageText, setMessageText] = useState<string>("");
+  const [sendingMessage, setSendingMessage] = useState<boolean>(false);
+  const userUsername = useAppSelector((state) => state.user.username);
+  const location = useLocation();
+  const contactUser = location.state.username;
+
+  const updateMessage = () => {
+    const newMessageText = (
+      document.getElementById("messageInput") as HTMLInputElement
+    ).value;
+    setMessageText(newMessageText);
+  };
+
+  const sendMessage = async () => {
+    setSendingMessage(true);
+    const message: Message = {
+      message: messageText,
+      sender: userUsername,
+      timestamp: Date.now(),
+    };
+    await createMessage(userUsername, contactUser, message);
+    setMessageText("");
+    setSendingMessage(false);
+  };
+
+  const getSendButton = () => {
+    if (sendingMessage) {
+      return SpinnerIcon;
+    } else {
+      return (
+        <div
+          className="primary-action-icon primary"
+          onClick={() => sendMessage()}
+        >
+          {SendIcon}
+        </div>
+      );
+    }
+  };
 
   return (
     <div className="chat-footer">
@@ -17,9 +60,12 @@ export default function ChatFooter() {
           className="body-large primary-container on-primary-container-text"
           type="text"
           placeholder="Enter message"
+          value={messageText}
+          onChange={() => updateMessage()}
+          id="messageInput"
         />
       </div>
-      <div className="primary-action-icon primary">{SendIcon}</div>
+      {getSendButton()}
     </div>
   );
 }

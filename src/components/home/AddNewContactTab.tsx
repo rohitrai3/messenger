@@ -10,7 +10,7 @@ import { useAppSelector } from "../../hooks/hooks";
 import ConnectionRequests from "./ConnectionRequests";
 
 export default function AddNewContactTab() {
-  const [username, setUsername] = useState<string>("");
+  const [searchUsername, setSearchUsername] = useState<string>("");
   const [searching, setSearching] = useState<boolean>(false);
   const [searchedUser, setSearchedUser] = useState<UserData>();
   const [sendingConnectionRequest, setSendingConnectinRequest] =
@@ -22,12 +22,12 @@ export default function AddNewContactTab() {
     const searchUserInputValue = (
       document.getElementById("searchUserInput") as HTMLInputElement
     ).value;
-    setUsername(searchUserInputValue);
+    setSearchUsername(searchUserInputValue);
   };
 
   const checkIsUserConnected = async () => {
     const connectedUsers = await getConnectedUsers(userUsername);
-    if (!connectedUsers.includes(username)) {
+    if (!connectedUsers.includes(searchUsername)) {
       setIsUserConnected(false);
     } else {
       setIsUserConnected(true);
@@ -36,15 +36,16 @@ export default function AddNewContactTab() {
 
   const searchUser = async () => {
     setSearching(true);
-    const userData = await getUserData(username);
+    const userData = await getUserData(searchUsername);
     setSearchedUser(userData);
     await checkIsUserConnected();
+    setSearchUsername("");
     setSearching(false);
   };
 
   const sendConnectionRequest = async () => {
     setSendingConnectinRequest(true);
-    await createConnectionRequest(userUsername, username);
+    await createConnectionRequest(userUsername, searchUsername);
     setSendingConnectinRequest(false);
   };
 
@@ -103,7 +104,7 @@ export default function AddNewContactTab() {
           className="body-large on-secondary-container-text secondary-container"
           type="text"
           placeholder="user@example.com"
-          value={username}
+          value={searchUsername}
           onChange={() => updateUsername()}
           id="searchUserInput"
         />

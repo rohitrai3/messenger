@@ -1,4 +1,4 @@
-import { UserData } from "../common/types";
+import { Message, UserData } from "../common/types";
 import app from "./firebase";
 import { child, get, getDatabase, ref, set } from "firebase/database";
 
@@ -66,8 +66,8 @@ export const createConnectionRequest = async (
   const requests: string[] = [requester];
   var isRequestExist: boolean = false;
 
-  await get(child(ref(database), `requests/${requestee}`)).then(
-    async (snapshot) => {
+  await get(child(ref(database), `requests/${requestee}`))
+    .then(async (snapshot) => {
       if (snapshot.exists()) {
         const fetchedRequests: string[] = snapshot.val();
         isRequestExist = fetchedRequests.includes(requester);
@@ -95,8 +95,40 @@ export const createConnectionRequest = async (
             console.log("Error while saving connection request: ", error);
           });
       }
-    }
-  );
+    })
+    .catch((error) => {
+      console.log("Error while fetching connection requests: ", error);
+    });
+};
+
+export const createMessage = async (
+  sender: string,
+  reciever: string,
+  message: Message
+) => {
+  const conversationName =
+    sender < reciever ? sender + "_" + reciever : reciever + "_" + sender;
+  var fetchedMessages: Message[] = [];
+
+  await get(child(ref(database), `chats/${conversationName}`))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        fetchedMessages = snapshot.val();
+      }
+    })
+    .catch((error) => {
+      console.log("Error while fetching chats: ", error);
+    });
+
+  fetchedMessages.push(message);
+
+  await set(ref(database, `chats/${conversationName}`), fetchedMessages)
+    .then(() => {
+      console.log("Message saved successfully: ", conversationName);
+    })
+    .catch((error) => {
+      console.log("Error while saving message: ", error);
+    });
 };
 
 export const getUsername = async (uid: string) => {

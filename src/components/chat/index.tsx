@@ -14,6 +14,7 @@ export default function Chat() {
       navigate("/");
     }
   });
+
   return (
     <div className="chat background">
       <ChatHeader />

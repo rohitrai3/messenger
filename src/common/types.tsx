@@ -3,3 +3,9 @@ export type UserData = {
   name: string;
   photoUrl: string;
 };
+
+export type Message = {
+  message: string;
+  sender: string;
+  timestamp: number;
+};
