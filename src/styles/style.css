@@ -373,7 +373,7 @@ button {
     border: 1px solid var(--md-sys-color-secondary-dark);
   }
   
-  .search-contact svg {
+  .primary-action-icon svg {
     fill: var(--md-sys-color-on-primary-dark);
   }
   

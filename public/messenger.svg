@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="399.99997"
+   height="400"
+   viewBox="0 0 399.99997 400"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath20">
+      <path
+         d="M 0,500 H 500 V 0 H 0 Z"
+         id="path18" />
+    </clipPath>
+  </defs>
+  <g
+     id="g10"
+     transform="matrix(1.3333333,0,0,-1.3333333,-129.46486,520.95421)">
+    <path
+       d="M 97.098646,90.715652 H 397.09865 V 390.71566 H 97.098646 Z"
+       style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.600001"
+       id="path12" />
+    <g
+       id="g14"
+       transform="translate(-2.901352,-29.284344)">
+      <g
+         id="g16"
+         clip-path="url(#clipPath20)">
+        <g
+           id="g22"
+           transform="translate(222.5,290)">
+          <path
+             d="M 0,0 C 0,-23.472 -19.028,-42.5 -42.5,-42.5 -65.972,-42.5 -85,-23.472 -85,0 -85,23.472 -65.972,42.5 -42.5,42.5 -19.028,42.5 0,23.472 0,0"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path24" />
+        </g>
+        <g
+           id="g26"
+           transform="translate(362.5,290)">
+          <path
+             d="M 0,0 C 0,-23.473 -19.028,-42.5 -42.5,-42.5 -65.972,-42.5 -85,-23.473 -85,0 -85,23.473 -65.972,42.5 -42.5,42.5 -19.028,42.5 0,23.473 0,0"
+             style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path28" />
+        </g>
+        <g
+           id="g30"
+           transform="translate(210,290)">
+          <path
+             d="m 0,0 c 0,-16.569 -13.431,-30 -30,-30 -16.569,0 -30,13.431 -30,30 0,16.569 13.431,30 30,30 C -13.431,30 0,16.569 0,0"
+             style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path32" />
+        </g>
+        <g
+           id="g34"
+           transform="translate(350,290)">
+          <path
+             d="m 0,0 c 0,-16.569 -13.432,-30 -30,-30 -16.568,0 -30,13.431 -30,30 0,16.569 13.432,30 30,30 C -13.432,30 0,16.569 0,0"
+             style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path36" />
+        </g>
+        <g
+           id="g38"
+           transform="translate(190,290)">
+          <path
+             d="m 0,0 c 0,-5.523 -4.477,-10 -10,-10 -5.523,0 -10,4.477 -10,10 0,5.523 4.477,10 10,10 C -4.477,10 0,5.523 0,0"
+             style="fill:#91268f;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path40" />
+        </g>
+        <g
+           id="g42"
+           transform="translate(330,290)">
+          <path
+             d="m 0,0 c 0,-5.523 -4.478,-10 -10,-10 -5.522,0 -10,4.477 -10,10 0,5.523 4.478,10 10,10 C -4.478,10 0,5.523 0,0"
+             style="fill:#91268f;fill-opacity:1;fill-rule:nonzero;stroke:none"
+             id="path44" />
+        </g>
+        <path
+           d="m 280,285 h -60 v 10 h 60 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path46" />
+        <path
+           d="m 140,285 h -20 v 10 h 20 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path48" />
+        <path
+           d="m 380,285 h -20 v 10 h 20 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path50" />
+        <path
+           d="m 285,202.5 h -70 v 15 h 70 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path52" />
+        <path
+           d="m 225,322.5 h -90 v 15 h 90 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path54" />
+        <path
+           d="m 365,322.5 h -90 v 15 h 90 z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path56" />
+      </g>
+    </g>
+  </g>
+</svg>
