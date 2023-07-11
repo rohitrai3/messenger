@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDnwgHj41f1FhiWUoHroxghT-fL4uEP7AA",
-  authDomain: "beta.messenger.rohitrai.dev",
+  authDomain: "messenger-f035e.firebaseapp.com",
   projectId: "messenger-f035e",
   storageBucket: "messenger-f035e.appspot.com",
   messagingSenderId: "821911262281",
