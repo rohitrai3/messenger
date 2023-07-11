@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { UserData } from "../../common/types";
-import { createConnectionRequest, getUserData } from "../../services/database";
+import {
+  createConnectionRequest,
+  getConnectedUsers,
+  getUserData,
+} from "../../services/database";
 import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/icons";
 import { useAppSelector } from "../../hooks/hooks";
 import ConnectionRequests from "./ConnectionRequests";
@@ -12,6 +16,7 @@ export default function AddNewContactTab() {
   const [sendingConnectionRequest, setSendingConnectinRequest] =
     useState<boolean>(false);
   const userUsername = useAppSelector((state) => state.user.username);
+  const [isUserConnected, setIsUserConnected] = useState<boolean>(true);
 
   const updateUsername = () => {
     const searchUserInputValue = (
@@ -20,10 +25,20 @@ export default function AddNewContactTab() {
     setUsername(searchUserInputValue);
   };
 
+  const checkIsUserConnected = async () => {
+    const connectedUsers = await getConnectedUsers(userUsername);
+    if (!connectedUsers.includes(username)) {
+      setIsUserConnected(false);
+    } else {
+      setIsUserConnected(true);
+    }
+  };
+
   const searchUser = async () => {
     setSearching(true);
     const userData = await getUserData(username);
     setSearchedUser(userData);
+    await checkIsUserConnected();
     setSearching(false);
   };
 
@@ -45,9 +60,11 @@ export default function AddNewContactTab() {
   };
 
   const getSendConnectionRequestButton = () => {
-    return sendingConnectionRequest
-      ? SpinnerIcon
-      : sendConnectionRequestButton();
+    if (!isUserConnected) {
+      return sendingConnectionRequest
+        ? SpinnerIcon
+        : sendConnectionRequestButton();
+    }
   };
 
   const getSearchedContact = () => {
