@@ -1,8 +1,12 @@
 import { Message, UserData } from "../common/types";
 import app from "./firebase";
-import { child, get, getDatabase, ref, set } from "firebase/database";
+import { child, get, getDatabase, onValue, ref, set } from "firebase/database";
 
 const database = getDatabase(app);
+
+const getConversationName = (sender: string, receiver: string) => {
+  return sender < receiver ? sender + "_" + receiver : receiver + "_" + sender;
+};
 
 export const createUser = async (
   uid: string,
@@ -103,11 +107,10 @@ export const createConnectionRequest = async (
 
 export const createMessage = async (
   sender: string,
-  reciever: string,
+  receiver: string,
   message: Message
 ) => {
-  const conversationName =
-    sender < reciever ? sender + "_" + reciever : reciever + "_" + sender;
+  const conversationName = getConversationName(sender, receiver);
   var fetchedMessages: Message[] = [];
 
   await get(child(ref(database), `chats/${conversationName}`))
@@ -281,4 +284,16 @@ export const updateContact = async (username: string, contact: string) => {
       }
     }
   );
+};
+
+export const getMessagesOnUpdate = async (
+  sender: string,
+  receiver: string,
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+) => {
+  const conversationName = getConversationName(sender, receiver);
+
+  onValue(ref(database, `chats/${conversationName}`), (sanpshot) => {
+    setMessages(sanpshot.val());
+  });
 };
