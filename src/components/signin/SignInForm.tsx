@@ -44,7 +44,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
   return (
     <div className="sign-in-form">
       <input
-        className="body-large on-secondary-container-text secondary-container"
+        className="body-large on-primary-container-text primary-container"
         type="text"
         placeholder="Enter unique username"
         value={username}

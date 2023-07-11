@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { SpinnerIcon } from "../../common/icons";
 import SignInForm, { SignInFormProps } from "./SignInForm";
+import SignInHeader from "./SignInHeader";
+import SignInFooter from "./SignInFooter";
 
 export default function SignIn() {
   const [authenticating, setAuthenticating] = useState<boolean>(false);
@@ -15,12 +17,9 @@ export default function SignIn() {
 
   return (
     <div className="sign-in background">
-      <div className="sign-in-heading on-background-text">
-        <div className="display-small">Welcome to</div>
-        <div className="display-large">Messenger</div>
-      </div>
+      <SignInHeader />
       {getSignInForm()}
-      <button className="portfolio-button label-large">Portfolio</button>
+      <SignInFooter />
     </div>
   );
 }

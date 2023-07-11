@@ -1,3 +1,5 @@
+/* Global */
+
 body {
   margin: 0px;
 }
@@ -6,6 +8,28 @@ button {
   cursor: pointer;
 }
 
+.portfolio-button {
+  padding: 12px 24px 12px 24px;
+  border-radius: 100px;
+  border: none;
+  color: white;
+  background-color: black;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  fill: var(--md-sys-color-primary-light);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Sign in */
+
 .sign-in {
   width: 100dvw;
   height: 100dvh;
@@ -13,9 +37,10 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: auto;
 }
 
-.sign-in-heading {
+.sign-in-header {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,13 +51,14 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 72px;
 }
 
 .sign-in-form input {
   width: 226px;
   height: 36px;
   padding-left: 24px;
-  border: 1px solid var(--md-sys-color-secondary-light);
+  border: 1px solid var(--md-sys-color-primary-light);
   border-radius: 100px;
 }
 
@@ -53,28 +79,9 @@ button {
   margin-right: 8px;
 }
 
-.portfolio-button {
-  height: 40px;
-  padding-left: 24px;
-  padding-right: 24px;
-  border-radius: 100px;
-  border: none;
-  color: white;
-  background-color: black;
+.sign-in-footer {
   position: fixed;
   bottom: 16px;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  fill: var(--md-sys-color-primary-light);
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 .home {
@@ -344,6 +351,8 @@ button {
 }
 
 @media (prefers-color-scheme: dark) {
+  /* Global */
+
   .portfolio-button {
     color: black;
     background-color: white;
@@ -351,6 +360,12 @@ button {
 
   .spinner {
     fill: var(--md-sys-color-primary-dark);
+  }
+
+  /* Sign in */
+
+  .sign-in-form input {
+    border: 1px solid var(--md-sys-color-primary-dark);
   }
 
   .contacts-panel {
