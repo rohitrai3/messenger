@@ -239,6 +239,28 @@ button {
   flex: 1;
 }
 
+.contacts-list {
+  width: 310px;
+  margin-top: 20px;
+}
+
+.contacts-user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.contacts-user-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  margin-right: 16px;
+}
+
+.contacts-user-name {
+  flex: 1;
+}
+
 @media (prefers-color-scheme: dark) {
   .portfolio-button {
     color: black;

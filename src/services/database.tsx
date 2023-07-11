@@ -64,11 +64,13 @@ export const createConnectionRequest = async (
   requestee: string
 ) => {
   const requests: string[] = [requester];
+  var isRequestExist: boolean = false;
 
   await get(child(ref(database), `requests/${requestee}`)).then(
     async (snapshot) => {
       if (snapshot.exists()) {
         const fetchedRequests: string[] = snapshot.val();
+        isRequestExist = fetchedRequests.includes(requester);
         fetchedRequests.forEach((request) => {
           requests.push(request);
         });
@@ -79,17 +81,20 @@ export const createConnectionRequest = async (
           requestee
         );
       }
-      await set(ref(database, `requests/${requestee}`), requests)
-        .then(() => {
-          console.log(
-            "Connection request saved successfully: ",
-            requester,
-            requestee
-          );
-        })
-        .catch((error) => {
-          console.log("Error while saving connection request: ", error);
-        });
+
+      if (!isRequestExist) {
+        await set(ref(database, `requests/${requestee}`), requests)
+          .then(() => {
+            console.log(
+              "Connection request saved successfully: ",
+              requester,
+              requestee
+            );
+          })
+          .catch((error) => {
+            console.log("Error while saving connection request: ", error);
+          });
+      }
     }
   );
 };
@@ -173,6 +178,19 @@ export const getConnectedUsers = async (username: string) => {
   return connectedUsers;
 };
 
+export const getConnectedUsersData = async (username: string) => {
+  const usersData: UserData[] = [];
+  const users = await getConnectedUsers(username);
+  users.splice(users.indexOf(username), 1);
+
+  for (const username of users) {
+    const userData = await getUserData(username);
+    usersData.push(userData);
+  }
+
+  return usersData;
+};
+
 export const updateContact = async (username: string, contact: string) => {
   await get(child(ref(database), `contacts/${username}`))
     .then(async (snapshot) => {
@@ -211,4 +229,24 @@ export const updateContact = async (username: string, contact: string) => {
     .catch((error) => {
       console.log("Error while fetching contact: ", error);
     });
+
+  await get(child(ref(database), `requests/${username}`)).then(
+    async (snapshot) => {
+      if (snapshot.exists()) {
+        const fetchedRequests = snapshot.val();
+        fetchedRequests.splice(fetchedRequests.indexOf(contact), 1);
+        await set(ref(database, `requests/${username}`), fetchedRequests)
+          .then(() => {
+            console.log(
+              "Connection request saved successfully: ",
+              username,
+              contact
+            );
+          })
+          .catch((error) => {
+            console.log("Error while saving connection request: ", error);
+          });
+      }
+    }
+  );
 };

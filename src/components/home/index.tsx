@@ -1,9 +1,10 @@
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppSelector } from "../../hooks/hooks";
 import { ContactTab } from "../../common/enums";
 import { useNavigate } from "react-router-dom";
 import AddNewContactTab from "./AddNewContactTab";
 import { TickIcon } from "../../common/icons";
+import ContactsTab from "./ContactsTab";
 
 export default function Home() {
   const userName = useAppSelector((state) => state.user.name);
@@ -13,11 +14,6 @@ export default function Home() {
     ContactTab.CONTACTS
   );
   const navigate = useNavigate();
-
-  const contactsTabContent = <h1>Contacts</h1>;
-
-  const [selectedTabContent, setSelectedTabContent] =
-    useState<ReactElement>(contactsTabContent);
 
   const getSelectionIcon = (tab: ContactTab) => {
     if (tab === selectedTab) {
@@ -40,13 +36,12 @@ export default function Home() {
         setSelectedTab(ContactTab.ADD_NEW);
         break;
     }
-    setSelectedTabContent(getTabContent(tab));
   };
 
-  const getTabContent = (tab: ContactTab) => {
-    switch (tab) {
+  const getTabContent = () => {
+    switch (selectedTab) {
       case ContactTab.CONTACTS:
-        return contactsTabContent;
+        return <ContactsTab />;
       case ContactTab.ADD_NEW:
         return <AddNewContactTab />;
     }
@@ -85,7 +80,7 @@ export default function Home() {
             {getSelectionIcon(ContactTab.ADD_NEW)}Add new
           </div>
         </div>
-        <div className="contacts-content">{selectedTabContent}</div>
+        <div className="contacts-content">{getTabContent()}</div>
       </div>
     </div>
   );

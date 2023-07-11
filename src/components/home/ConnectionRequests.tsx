@@ -22,6 +22,7 @@ export default function ConnectionRequests() {
   const acceptConnectionRequest = async (username: string) => {
     setAcceptingConnectionRequest(true);
     await updateContact(userUsername, username);
+    await loadConnectionRequests();
     setAcceptingConnectionRequest(false);
   };
 
