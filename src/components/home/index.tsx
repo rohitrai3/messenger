@@ -48,7 +48,9 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (userName === "Unknown") navigate("/");
+    if (userName === "Unknown") {
+      navigate("/");
+    }
   });
 
   return (

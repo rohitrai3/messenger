@@ -177,7 +177,7 @@ button {
   cursor: pointer;
 }
 
-.search-contact svg {
+.primary-action-icon svg {
   fill: var(--md-sys-color-on-primary-light);
 }
 
@@ -261,6 +261,54 @@ button {
   flex: 1;
 }
 
+.chat {
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-user-info {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.chat-user-info img {
+  width: 120px;
+  height: 120px;
+  border-radius: 100px;
+  margin-right: 16px;
+}
+
+.conversation {
+  flex: 1;
+}
+
+.conversation-heading {
+  width: 358px;
+  padding-top: 4px;
+  border-top: 1px solid;
+}
+
+.chat-footer {
+  display: flex;
+  padding-bottom: 16px;
+}
+
+.message-input input {
+  width: 230px;
+  height: 36px;
+  padding-left: 24px;
+  margin-left: 16px;
+  margin-right: 16px;
+  border: 1px solid var(--md-sys-color-primary-light);
+  border-radius: 100px;
+}
+
 @media (prefers-color-scheme: dark) {
   .portfolio-button {
     color: black;
@@ -297,5 +345,9 @@ button {
   
   .secondary-action-icon svg {
     fill: var(--md-sys-color-on-secondary-dark);
+  }
+
+  .message-input input {
+    border: 1px solid var(--md-sys-color-primary-dark);
   }
 }

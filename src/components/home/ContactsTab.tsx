@@ -3,11 +3,13 @@ import { UserData } from "../../common/types";
 import { getConnectedUsersData } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { NextIcon, SpinnerIcon } from "../../common/icons";
+import { useNavigate } from "react-router-dom";
 
 export default function ContactsTab() {
   const [connectedUsersData, setConnectedUsersData] = useState<UserData[]>([]);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
   const userUsername = useAppSelector((state) => state.user.username);
+  const navigate = useNavigate();
 
   const loadConnectedUsersData = async () => {
     setLoadingUsers(true);
@@ -37,7 +39,13 @@ export default function ContactsTab() {
                 </div>
                 <div
                   className="secondary-action-icon secondary"
-                  // onClick={() => acceptConnectionRequest(username)}
+                  onClick={() =>
+                    navigate("/chat", {
+                      state: {
+                        username: connectedUserData.username,
+                      },
+                    })
+                  }
                 >
                   {NextIcon}
                 </div>
