@@ -28,6 +28,11 @@ button {
   100% { transform: rotate(360deg); }
 }
 
+.disabled-button {
+  cursor: default;
+  opacity: 0.5;
+}
+
 /* Sign in */
 
 .sign-in {

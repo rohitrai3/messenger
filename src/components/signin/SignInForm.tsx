@@ -25,7 +25,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     const signInInputValue = (
       document.getElementById("signInInput") as HTMLInputElement
     ).value;
-    setUsername(signInInputValue);
+    setUsername(signInInputValue.trim());
   };
 
   const signIn = async () => {
@@ -41,6 +41,22 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     setAuthenticating(false);
   };
 
+  const isDisableSignIn = () => {
+    if (username.length === 0 || username.match(/\.|\#|\$|\[|\]|\//g)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const getDisabledButtonStyle = () => {
+    if (isDisableSignIn()) {
+      return "disabled-button";
+    }
+  };
+
+  console.log("username: ", username, " :end");
+
   return (
     <div className="sign-in-form">
       <input
@@ -51,9 +67,11 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
         id="signInInput"
         onChange={() => updateUsername()}
       />
+      <div className="sign-in-input-supporting text"></div>
       <button
-        className="primary label-large on-primary-text"
+        className={`${getDisabledButtonStyle()} primary label-large on-primary-text`}
         onClick={() => signIn()}
+        disabled={isDisableSignIn()}
       >
         {GoogleIcon}
         Sign in with Google
