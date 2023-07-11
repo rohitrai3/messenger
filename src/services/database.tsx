@@ -146,3 +146,36 @@ export const createConnectionRequest = async (
     }
   );
 };
+
+export const updateContact = async (username: string, contact: string) => {
+  await get(child(ref(database), `contacts/${username}`))
+    .then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const fetchedContacts = snapshot.val();
+        fetchedContacts.push(contact);
+        await set(ref(database, `contacts/${username}`), fetchedContacts)
+          .then(() =>
+            console.log("Contact saved successfully: ", username, contact)
+          )
+          .catch((error) => console.log("Error while saving contact: ", error));
+        await get(child(ref(database), `contacts/${contact}`)).then(
+          async (snapshot) => {
+            if (snapshot.exists()) {
+              const fetchedContacts = snapshot.val();
+              fetchedContacts.push(username);
+              await set(ref(database, `contacts/${contact}`), fetchedContacts)
+                .then(() =>
+                  console.log("Contact saved successfully: ", username, contact)
+                )
+                .catch((error) =>
+                  console.log("Error while saving contact: ", error)
+                );
+            }
+          }
+        );
+      }
+    })
+    .catch((error) => {
+      console.log("Error while fetching contact: ", error);
+    });
+};

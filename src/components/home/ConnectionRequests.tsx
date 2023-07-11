@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UserData } from "../../common/types";
-import { getConnectionRequests } from "../../services/database";
+import { getConnectionRequests, updateContact } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { SpinnerIcon, TickIcon } from "../../common/icons";
 
@@ -19,14 +19,27 @@ export default function ConnectionRequests() {
     setLoadingConnectionRequests(false);
   };
 
-  const acceptConnectionRequestButton = () => {
-    return <div className="secondary-action-icon secondary">{TickIcon}</div>;
+  const acceptConnectionRequest = async (username: string) => {
+    setAcceptingConnectionRequest(true);
+    await updateContact(userUsername, username);
+    setAcceptingConnectionRequest(false);
   };
 
-  const getSendConnectionRequestButton = () => {
+  const acceptConnectionRequestButton = (username: string) => {
+    return (
+      <div
+        className="secondary-action-icon secondary"
+        onClick={() => acceptConnectionRequest(username)}
+      >
+        {TickIcon}
+      </div>
+    );
+  };
+
+  const getSendConnectionRequestButton = (username: string) => {
     return acceptingConnectionRequest
       ? SpinnerIcon
-      : acceptConnectionRequestButton();
+      : acceptConnectionRequestButton(username);
   };
 
   const getConnectionRequestsList = () => {
@@ -48,7 +61,7 @@ export default function ConnectionRequests() {
                     @{connectionRequest.username}
                   </div>
                 </div>
-                {getSendConnectionRequestButton()}
+                {getSendConnectionRequestButton(connectionRequest.username)}
               </div>
             );
           })}
