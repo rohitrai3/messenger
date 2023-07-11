@@ -33,6 +33,21 @@ button {
   opacity: 0.5;
 }
 
+.notification {
+  padding: 14px 2px 14px 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  bottom: 76px;
+}
+
+.notification svg {
+  cursor: pointer;
+  margin-left: 12px;
+  fill: var(--md-sys-color-on-error-light);
+}
+
 /* Sign in */
 
 .sign-in {
@@ -411,5 +426,9 @@ button {
 
   .message-contact {
     border: 1px solid var(--md-sys-color-on-secondary-dark);
+  }
+
+  .notification svg {
+    fill: var(--md-sys-color-on-error-dark);
   }
 }

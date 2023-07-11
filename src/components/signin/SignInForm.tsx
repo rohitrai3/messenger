@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppDispatch } from "../../hooks/hooks";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   UserState,
   setUserName,
@@ -10,7 +10,7 @@ import {
 } from "../../store/slices/userSlice";
 import authenticate from "../../services/authentication";
 import { createContact, createUser } from "../../services/database";
-import { GoogleIcon } from "../../common/icons";
+import { CloseIcon, GoogleIcon } from "../../common/icons";
 
 export type SignInFormProps = {
   setAuthenticating: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,6 +20,8 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
   const [username, setUsername] = useState<string>("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const notification = location.state?.notification;
 
   const updateUsername = () => {
     const signInInputValue = (
@@ -31,13 +33,26 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
   const signIn = async () => {
     setAuthenticating(true);
     const user: UserState = await authenticate();
-    await createUser(user.uid, username, user.name, user.photoUrl);
-    await createContact(username);
-    dispatch(setUserUid(user.uid));
-    dispatch(setUserUsername(username));
-    dispatch(setUserName(user.name));
-    dispatch(setUserPhotoUrl(user.photoUrl));
-    navigate("/home");
+    const notification = await createUser(
+      user.uid,
+      username,
+      user.name,
+      user.photoUrl
+    );
+    if (notification.length) {
+      navigate("/", {
+        state: {
+          notification: notification,
+        },
+      });
+    } else {
+      await createContact(username);
+      dispatch(setUserUid(user.uid));
+      dispatch(setUserUsername(username));
+      dispatch(setUserName(user.name));
+      dispatch(setUserPhotoUrl(user.photoUrl));
+      navigate("/home");
+    }
     setAuthenticating(false);
   };
 
@@ -55,7 +70,16 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     }
   };
 
-  console.log("username: ", username, " :end");
+  const getNotification = () => {
+    if (notification) {
+      return (
+        <div className="notification body-medium error on-error-text">
+          {notification}
+          <div onClick={() => navigate("/")}>{CloseIcon}</div>
+        </div>
+      );
+    }
+  };
 
   return (
     <div className="sign-in-form">
@@ -76,6 +100,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
         {GoogleIcon}
         Sign in with Google
       </button>
+      {getNotification()}
     </div>
   );
 }

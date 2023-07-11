@@ -14,9 +14,16 @@ export const createUser = async (
   name: string,
   photoUrl: string
 ) => {
+  var notification = "";
+
   await get(child(ref(database), `users/${uid}`))
     .then(async (snapshot) => {
-      if (!snapshot.exists()) {
+      if (snapshot.exists()) {
+        const fetchedUsername = snapshot.val().username;
+        if (fetchedUsername !== username) {
+          notification = `Wrong username: ${username}`;
+        }
+      } else {
         console.log("User does not exist: ", uid);
         await set(ref(database, `users/${uid}`), {
           username: username,
@@ -42,6 +49,8 @@ export const createUser = async (
     .catch((error) => {
       console.log("Error while fetching user: ", error);
     });
+
+  return notification;
 };
 
 export const createContact = async (username: string) => {
