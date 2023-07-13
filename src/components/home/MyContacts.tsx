@@ -43,6 +43,7 @@ export default function MyContacts({ initializingUserState }: MyContactsProps) {
               navigate("/chat", {
                 state: {
                   username: username,
+                  init: initializingUserState,
                 },
               })
             }
