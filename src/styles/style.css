@@ -16,6 +16,14 @@ button {
   background-color: black;
 }
 
+.sign-out-button {
+  padding: 12px 24px 12px 24px;
+  border-radius: 100px;
+  border: none;
+  color: var(--md-sys-color-on-tertiary-light);
+  background-color: var(--md-sys-color-tertiary-light);
+}
+
 .spinner {
   width: 40px;
   height: 40px;
@@ -48,6 +56,75 @@ button {
   fill: var(--md-sys-color-on-error-light);
 }
 
+.user-profile-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.user-profile-photo img {
+  width: 120px;
+  height: 120px;
+}
+
+.user-info {
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  border-radius: 100px;
+}
+
+.user-name {
+  margin-left: 16px;
+}
+
+.contact-user-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.contact-user-info img {
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+}
+
+.contact-user-name {
+  flex: 1;
+  margin-left: 8px;
+}
+
+.primary-action-icon {
+  width: 24px;
+  height: 24px;
+  padding: 8px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.primary-action-icon svg {
+  fill: var(--md-sys-color-on-primary-light);
+}
+
+.secondary-action-icon {
+  width: 24px;
+  height: 24px;
+  padding: 8px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.secondary-action-icon svg {
+  fill: var(--md-sys-color-on-secondary-light);
+}
+
+.contact-list-item {
+  margin-bottom: 16px;
+}
+
 /* Sign in */
 
 .sign-in {
@@ -72,6 +149,50 @@ button {
   flex-direction: column;
   align-items: center;
   margin-bottom: 72px;
+}
+
+.select-user-type {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.switch-track-new-user {
+  width: 52px;
+  height: 32px;
+  border: 2px solid var(--md-sys-color-outline-light);
+  border-radius: 100px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.switch-handle-new-user {
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  margin: 8px;
+}
+
+.switch-track-existing-user {
+  width: 52px;
+  height: 32px;
+  border: 2px solid var(--md-sys-color-primary-light);
+  border-radius: 100px;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.switch-handle-existing-user {
+  width: 24px;
+  height: 24px;
+  border-radius: 23px;
+  margin: 4px;
 }
 
 .sign-in-form input {
@@ -104,6 +225,8 @@ button {
   bottom: 16px;
 }
 
+/* Home */
+
 .home {
   width: 100dvw;
   height: 100dvh;
@@ -111,39 +234,45 @@ button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow: auto;
 }
 
-.profile-photo {
-  width: 120px;
-  height: 120px;
-  border-radius: 100px;
+.home-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 16px;
 }
 
-.horizontal-line {
+.home-horizontal-line {
   width: 358px;
-  height: 1px;
-  margin-top: 24px;
-  margin-bottom: 24px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--md-sys-color-outline-variant-light);
 }
 
-.contacts-panel {
-  width: 342px;
-  height: 370px;
+.contacts {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.contacts-tabs-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   margin-top: 36px;
   border: 1px solid var(--md-sys-color-outline-light);
   border-radius: 12px;
+  position: relative;
 }
 
 .contacts-tabs {
   width: 310px;
   height: 40px;
   display: flex;
-  justify-content: center;
   align-items: center;
   margin-top: -20px;
   cursor: pointer;
@@ -154,7 +283,7 @@ button {
   fill: var(--md-sys-color-on-secondary-container-light);
 }
 
-.contacts-title {
+.my-contacts-title {
   height: 40px;
   display: flex;
   justify-content: center;
@@ -163,6 +292,15 @@ button {
   border: 1px solid var(--md-sys-color-outline-light);
   border-top-left-radius: 100px;
   border-bottom-left-radius: 100px;
+}
+
+.my-contacts {
+  position: absolute;
+  top: 36px;
+  left: 16px;
+  bottom: 0px;
+  right: 16px;
+  overflow: auto;
 }
 
 .add-new-title {
@@ -177,8 +315,10 @@ button {
   border-bottom-right-radius: 100px;
 }
 
-.contacts-content {
+.add-new {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .search-contact {
@@ -196,51 +336,15 @@ button {
   border-radius: 100px;
 }
 
-.primary-action-icon {
-  width: 24px;
-  height: 24px;
-  padding: 8px;
-  border-radius: 100px;
-  cursor: pointer;
-}
-
-.primary-action-icon svg {
-  fill: var(--md-sys-color-on-primary-light);
-}
-
 .searched-contact {
   margin-top: 16px;
   display: flex;
-  align-items: center;
-}
-
-.searched-contact-user-info {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.searched-contact-user-info img {
-  width: 60px;
-  height: 60px;
-  border-radius: 100px;
-  margin-right: 16px;
-}
-
-.secondary-action-icon {
-  width: 24px;
-  height: 24px;
-  padding: 8px;
-  border-radius: 100px;
-  cursor: pointer;
-}
-
-.secondary-action-icon svg {
-  fill: var(--md-sys-color-on-secondary-light);
 }
 
 .connection-requests {
-  margin-top: 20px;
+  flex: 1;
+  margin-top: 16px;
+  position: relative;
 }
 
 .connection-requests-heading {
@@ -249,44 +353,23 @@ button {
   margin-bottom: 16px;
 }
 
-.connection-requests-user-info {
+.connection-request-list {
+  position: absolute;
+  top: 32px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  overflow: auto;
+}
+
+.home-footer {
+  width: 358px;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   margin-bottom: 16px;
 }
 
-.connection-requests-user-info img {
-  width: 60px;
-  height: 60px;
-  border-radius: 100px;
-  margin-right: 16px;
-}
-
-.connection-requests-user-name {
-  flex: 1;
-}
-
-.contacts-list {
-  width: 310px;
-  margin-top: 20px;
-}
-
-.contacts-user-info {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-.contacts-user-info img {
-  width: 60px;
-  height: 60px;
-  border-radius: 100px;
-  margin-right: 16px;
-}
-
-.contacts-user-name {
-  flex: 1;
-}
+/* Chat */
 
 .chat {
   width: 100dvw;
@@ -315,6 +398,7 @@ button {
   flex: 1;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .conversation-heading {
@@ -339,23 +423,30 @@ button {
 }
 
 .messages {
-  margin-top: 16px;
-  margin-bottom: 32px;
   flex: 1;
   display: flex;
   flex-direction: column-reverse;
+  position: absolute;
+  top: 28px;
+  right: 0px;
+  bottom: 16px;
+  left: 0px;
+  overflow: auto;
 }
 
 .message-right {
   display: flex;
   justify-content: right;
   align-items: center;
+  margin-top: 8px;
+
 }
 
 .message-left {
   display: flex;
   justify-content: left;
   align-items: center;
+  margin-top: 8px;
 }
 
 .message-user {
@@ -378,14 +469,37 @@ button {
     background-color: white;
   }
 
+  .sign-out-button {
+    color: var(--md-sys-color-on-tertiary-dark);
+    background-color: var(--md-sys-color-tertiary-dark);
+  }
+
   .spinner {
     fill: var(--md-sys-color-primary-dark);
+  }
+
+  .primary-action-icon svg {
+    fill: var(--md-sys-color-on-primary-dark);
+  }
+  
+  .secondary-action-icon svg {
+    fill: var(--md-sys-color-on-secondary-dark);
+  }
+
+  .notification svg {
+    fill: var(--md-sys-color-on-error-dark);
   }
 
   /* Sign in */
 
   .sign-in-form input {
     border: 1px solid var(--md-sys-color-primary-dark);
+  }
+
+  /* Home */
+
+  .home-horizontal-line {
+    border: 1px solid var(--md-sys-color-outline-variant-dark);
   }
 
   .contacts-panel {
@@ -407,14 +521,8 @@ button {
   .search-contact input {
     border: 1px solid var(--md-sys-color-secondary-dark);
   }
-  
-  .primary-action-icon svg {
-    fill: var(--md-sys-color-on-primary-dark);
-  }
-  
-  .secondary-action-icon svg {
-    fill: var(--md-sys-color-on-secondary-dark);
-  }
+
+  /* Chat */
 
   .message-input input {
     border: 1px solid var(--md-sys-color-primary-dark);
@@ -426,9 +534,5 @@ button {
 
   .message-contact {
     border: 1px solid var(--md-sys-color-on-secondary-dark);
-  }
-
-  .notification svg {
-    fill: var(--md-sys-color-on-error-dark);
   }
 }

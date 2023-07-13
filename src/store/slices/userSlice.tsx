@@ -9,10 +9,10 @@ export interface UserState {
 }
 
 const initialState: UserState = {
-  uid: "Unknown",
-  username: "Unknown",
-  name: "Unknown",
-  photoUrl: "Unknown",
+  uid: "",
+  username: "",
+  name: "",
+  photoUrl: "",
 };
 
 export const userSlice = createSlice({

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { BeforeIcon, SendIcon, SpinnerIcon } from "../../common/icons";
 import { useState } from "react";
-import { createMessage } from "../../services/database";
+import { addMessage } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { Message } from "../../common/types";
 
@@ -27,7 +27,7 @@ export default function ChatFooter() {
       sender: userUsername,
       timestamp: Date.now(),
     };
-    await createMessage(userUsername, contactUser, message);
+    await addMessage(userUsername, contactUser, message);
     setMessageText("");
     setSendingMessage(false);
   };
