@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { UserData } from "../../common/types";
-import { getConnectionRequests, updateContact } from "../../services/database";
+import {
+  getConnectionRequestsOnUpdate,
+  addContact,
+  removeConnectionRequest,
+} from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { SpinnerIcon, TickIcon } from "../../common/icons";
 
@@ -11,17 +15,20 @@ export default function ConnectionRequests() {
   const userUsername = useAppSelector((state) => state.user.username);
   const [acceptingConnectionRequest, setAcceptingConnectionRequest] =
     useState<boolean>(false);
+  const [connectionRequestsCount, setConnectionRequestsCount] =
+    useState<number>(0);
 
   const loadConnectionRequests = async () => {
     setLoadingConnectionRequests(true);
-    const usersData = await getConnectionRequests(userUsername);
-    setConnectionRequests(usersData);
+    await getConnectionRequestsOnUpdate(userUsername, setConnectionRequests);
     setLoadingConnectionRequests(false);
   };
 
   const acceptConnectionRequest = async (username: string) => {
     setAcceptingConnectionRequest(true);
-    await updateContact(userUsername, username);
+    await addContact(userUsername, username);
+    await addContact(username, userUsername);
+    await removeConnectionRequest(userUsername, username);
     await loadConnectionRequests();
     setAcceptingConnectionRequest(false);
   };
@@ -43,27 +50,39 @@ export default function ConnectionRequests() {
       : acceptConnectionRequestButton(username);
   };
 
+  const showContactUserInfo = (
+    username: string,
+    name: string,
+    photoUrl: string
+  ) => {
+    return (
+      <div key={username} className="contact-list-item">
+        <div
+          key={username}
+          className="contact-user-info on-primary-container-text"
+        >
+          <img src={photoUrl} />
+          <div className="contact-user-name">
+            <div className="headline-small">{name}</div>
+            <div className="label-medium">@{username}</div>
+          </div>
+          {getSendConnectionRequestButton(username)}
+        </div>
+      </div>
+    );
+  };
+
   const getConnectionRequestsList = () => {
     if (loadingConnectionRequests) {
       return SpinnerIcon;
     } else {
       return (
-        <div className="connection-requests-list">
-          {connectionRequests.map((connectionRequest) => {
-            return (
-              <div
-                key={connectionRequest.username}
-                className="connection-requests-user-info on-primary-container-text"
-              >
-                <img src={connectionRequest.photoUrl} />
-                <div className="connection-requests-user-name">
-                  <div className="headline-small">{connectionRequest.name}</div>
-                  <div className="label-medium">
-                    @{connectionRequest.username}
-                  </div>
-                </div>
-                {getSendConnectionRequestButton(connectionRequest.username)}
-              </div>
+        <div className="connection-request-list">
+          {connectionRequests?.map((connectionRequest) => {
+            return showContactUserInfo(
+              connectionRequest.username,
+              connectionRequest.name,
+              connectionRequest.photoUrl
             );
           })}
         </div>
@@ -71,14 +90,26 @@ export default function ConnectionRequests() {
     }
   };
 
+  const updateConnectionRequestsCount = () => {
+    if (connectionRequests) {
+      setConnectionRequestsCount(connectionRequests.length);
+    } else {
+      setConnectionRequestsCount(0);
+    }
+  };
+
   useEffect(() => {
     loadConnectionRequests();
   }, []);
 
+  useEffect(() => {
+    updateConnectionRequestsCount();
+  }, [connectionRequests]);
+
   return (
     <div className="connection-requests">
       <div className="connection-requests-heading title-small on-surface-variant-text">
-        Incoming connection requests ({connectionRequests.length})
+        Incoming connection requests ({connectionRequestsCount})
       </div>
       {getConnectionRequestsList()}
     </div>

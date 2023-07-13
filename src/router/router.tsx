@@ -9,7 +9,7 @@ const sign_in = {
 };
 
 const home = {
-  path: "/home",
+  path: "/",
   element: <Home />,
 };
 
@@ -18,4 +18,6 @@ const chat = {
   element: <Chat />,
 };
 
-export const router = createBrowserRouter([sign_in, home, chat]);
+export const router = createBrowserRouter([sign_in]);
+
+export const authenticatedRouter = createBrowserRouter([home, chat]);

@@ -9,3 +9,9 @@ export type Message = {
   sender: string;
   timestamp: number;
 };
+
+export type GoogleUserData = {
+  uid: string;
+  name: string;
+  photoUrl: string;
+};

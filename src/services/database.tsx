@@ -1,4 +1,5 @@
 import { Message, UserData } from "../common/types";
+import { UserState } from "../store/slices/userSlice";
 import app from "./firebase";
 import { child, get, getDatabase, onValue, ref, set } from "firebase/database";
 
@@ -8,71 +9,30 @@ const getConversationName = (sender: string, receiver: string) => {
   return sender < receiver ? sender + "_" + receiver : receiver + "_" + sender;
 };
 
-export const createUser = async (
-  uid: string,
-  username: string,
-  name: string,
-  photoUrl: string
-) => {
-  var notification = "";
-
-  await get(child(ref(database), `users/${uid}`))
-    .then(async (snapshot) => {
-      if (snapshot.exists()) {
-        const fetchedUsername = snapshot.val().username;
-        if (fetchedUsername !== username) {
-          notification = `Wrong username: ${username}`;
-        }
-      } else {
-        console.log("User does not exist: ", uid);
-        await set(ref(database, `users/${uid}`), {
-          username: username,
-        })
-          .then(() => {
-            console.log("User saved successfully: ", uid);
-          })
-          .catch((error) => {
-            console.log("Error while saving user: ", error);
-          });
-        await set(ref(database, `users/${username}`), {
-          name: name,
-          photoUrl: photoUrl,
-        })
-          .then(() => {
-            console.log("User data saved successfully: ", username);
-          })
-          .catch((error) => {
-            console.log("Error while saving user data: ", error);
-          });
-      }
+export const addUser = async (userState: UserState) => {
+  await set(ref(database, `users/${userState.uid}`), {
+    username: userState.username,
+  })
+    .then(() => {
+      console.log("User saved successfully: ", userState.uid);
     })
     .catch((error) => {
-      console.log("Error while fetching user: ", error);
+      console.log("Error while saving user: ", error);
     });
 
-  return notification;
-};
-
-export const createContact = async (username: string) => {
-  await get(child(ref(database), `contacts/${username}`))
-    .then(async (snapshot) => {
-      if (!snapshot.exists()) {
-        console.log("Contact does not exist: ", username);
-        await set(ref(database, `contacts/${username}`), [username])
-          .then(() => {
-            console.log("Contact saved successfully: ", username);
-          })
-          .catch((error) => {
-            console.log("Error while saving contact: ", error);
-          });
-      }
+  await set(ref(database, `users/${userState.username}`), {
+    name: userState.name,
+    photoUrl: userState.photoUrl,
+  })
+    .then(() => {
+      console.log("User data saved successfully: ", userState.username);
     })
     .catch((error) => {
-      console.log("Error while fetching contact: ", error);
+      console.log("Error while saving user data: ", error);
     });
 };
 
-export const createConnectionRequest = async (
+export const addConnectionRequest = async (
   requester: string,
   requestee: string
 ) => {
@@ -114,7 +74,7 @@ export const createConnectionRequest = async (
     });
 };
 
-export const createMessage = async (
+export const addMessage = async (
   sender: string,
   receiver: string,
   message: Message
@@ -144,7 +104,7 @@ export const createMessage = async (
 };
 
 export const getUsername = async (uid: string) => {
-  var username: string = "Unknown";
+  var username: string = "";
 
   await get(child(ref(database), `users/${uid}`))
     .then((snapshot) => {
@@ -184,26 +144,24 @@ export const getUserData = async (username: string) => {
   return userData;
 };
 
-export const getConnectionRequests = async (username: string) => {
+export const getConnectionRequestsOnUpdate = async (
+  username: string,
+  setConnectionRequests: React.Dispatch<React.SetStateAction<UserData[]>>
+) => {
   const usersData: UserData[] = [];
 
-  await get(child(ref(database), `requests/${username}`))
-    .then(async (snapshot) => {
-      if (snapshot.exists()) {
-        const usernames: string[] = snapshot.val();
-        for (const username of usernames) {
-          const userData = await getUserData(username);
-          usersData.push(userData);
-        }
-      } else {
-        console.log("Connection requests does not exist: ", username);
+  onValue(ref(database, `requests/${username}`), async (snapshot) => {
+    if (snapshot.exists()) {
+      const usernames: string[] = snapshot.val();
+      for (const username of usernames) {
+        const userData = await getUserData(username);
+        usersData.push(userData);
       }
-    })
-    .catch((error) => {
-      console.log("Error while fetching connection requests: ", error);
-    });
-
-  return usersData;
+    } else {
+      console.log("Connection requests does not exist: ", username);
+    }
+    setConnectionRequests(usersData);
+  });
 };
 
 export const getConnectedUsers = async (username: string) => {
@@ -222,25 +180,33 @@ export const getConnectedUsers = async (username: string) => {
   return connectedUsers;
 };
 
-export const getConnectedUsersData = async (username: string) => {
+export const getConnectedUsersOnUpdate = async (
+  username: string,
+  setConnectedUsersData: React.Dispatch<React.SetStateAction<UserData[]>>
+) => {
   const usersData: UserData[] = [];
-  const users = await getConnectedUsers(username);
-  users.splice(users.indexOf(username), 1);
 
-  for (const username of users) {
-    const userData = await getUserData(username);
-    usersData.push(userData);
-  }
-
-  return usersData;
+  onValue(ref(database, `contacts/${username}`), async (snapshot) => {
+    if (snapshot.exists()) {
+      const usernames: string[] = snapshot.val();
+      for (const username of usernames) {
+        const userData = await getUserData(username);
+        usersData.push(userData);
+      }
+    } else {
+      console.log("Contacts does not exist: ", username);
+    }
+    setConnectedUsersData(usersData);
+  });
 };
 
-export const updateContact = async (username: string, contact: string) => {
+export const addContact = async (username: string, contact: string) => {
   await get(child(ref(database), `contacts/${username}`))
     .then(async (snapshot) => {
       if (snapshot.exists()) {
         const fetchedContacts = snapshot.val();
         fetchedContacts.push(contact);
+
         await set(ref(database, `contacts/${username}`), fetchedContacts)
           .then(() => {
             console.log("Contact saved successfully: ", username, contact);
@@ -248,32 +214,37 @@ export const updateContact = async (username: string, contact: string) => {
           .catch((error) => {
             console.log("Error while saving contact: ", error);
           });
-
-        await get(child(ref(database), `contacts/${contact}`)).then(
-          async (snapshot) => {
-            if (snapshot.exists()) {
-              const fetchedContacts = snapshot.val();
-              fetchedContacts.push(username);
-              await set(ref(database, `contacts/${contact}`), fetchedContacts)
-                .then(() => {
-                  console.log(
-                    "Contact saved successfully: ",
-                    username,
-                    contact
-                  );
-                })
-                .catch((error) => {
-                  console.log("Error while saving contact: ", error);
-                });
-            }
-          }
-        );
+      } else {
+        await set(ref(database, `contacts/${username}`), [contact])
+          .then(() => {
+            console.log("Contact saved successfully: ", username, contact);
+          })
+          .catch((error) => {
+            console.log("Error while saving contact: ", error);
+          });
       }
     })
     .catch((error) => {
       console.log("Error while fetching contact: ", error);
     });
+};
 
+export const getMessagesOnUpdate = (
+  sender: string,
+  receiver: string,
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+) => {
+  const conversationName = getConversationName(sender, receiver);
+
+  onValue(ref(database, `chats/${conversationName}`), (sanpshot) => {
+    setMessages(sanpshot.val());
+  });
+};
+
+export const removeConnectionRequest = async (
+  username: string,
+  contact: string
+) => {
   await get(child(ref(database), `requests/${username}`)).then(
     async (snapshot) => {
       if (snapshot.exists()) {
@@ -295,14 +266,34 @@ export const updateContact = async (username: string, contact: string) => {
   );
 };
 
-export const getMessagesOnUpdate = async (
-  sender: string,
-  receiver: string,
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
-) => {
-  const conversationName = getConversationName(sender, receiver);
+export const checkUidExist = async (uid: string) => {
+  var isUidExist: boolean = false;
 
-  onValue(ref(database, `chats/${conversationName}`), (sanpshot) => {
-    setMessages(sanpshot.val());
-  });
+  await get(child(ref(database), `users/${uid}`))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        isUidExist = true;
+      }
+    })
+    .catch((error) => {
+      console.log("Error while checking uid: ", error);
+    });
+
+  return isUidExist;
+};
+
+export const checkUsernameExist = async (username: string) => {
+  var isUsernameExist: boolean = false;
+
+  await get(child(ref(database), `users/${username}`))
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        isUsernameExist = true;
+      }
+    })
+    .catch((error) => {
+      console.log("Error while checking username: ", error);
+    });
+
+  return isUsernameExist;
 };
