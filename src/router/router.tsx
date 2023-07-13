@@ -18,6 +18,6 @@ const chat = {
   element: <Chat />,
 };
 
-export const router = createBrowserRouter([sign_in]);
+export const router = createBrowserRouter([sign_in, chat]);
 
 export const authenticatedRouter = createBrowserRouter([home, chat]);
