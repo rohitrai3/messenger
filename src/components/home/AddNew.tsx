@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { UserData } from "../../common/types";
 import {
-  createConnectionRequest,
+  addConnectionRequest,
   getConnectedUsers,
   getUserData,
 } from "../../services/database";
@@ -9,7 +9,7 @@ import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/icons";
 import { useAppSelector } from "../../hooks/hooks";
 import ConnectionRequests from "./ConnectionRequests";
 
-export default function AddNewContactTab() {
+export default function AddNew() {
   const [searchUsername, setSearchUsername] = useState<string>("");
   const [searching, setSearching] = useState<boolean>(false);
   const [searchedUser, setSearchedUser] = useState<UserData>();
@@ -45,7 +45,8 @@ export default function AddNewContactTab() {
 
   const sendConnectionRequest = async () => {
     setSendingConnectinRequest(true);
-    await createConnectionRequest(userUsername, searchUsername);
+    await addConnectionRequest(userUsername, searchedUser?.username!);
+    setIsUserConnected(true);
     setSendingConnectinRequest(false);
   };
 
@@ -68,18 +69,35 @@ export default function AddNewContactTab() {
     }
   };
 
+  const showContactUserInfo = (
+    username: string,
+    name: string,
+    photoUrl: string
+  ) => {
+    return (
+      <div
+        key={username}
+        className="contact-user-info on-primary-container-text"
+      >
+        <img src={photoUrl} />
+        <div className="contact-user-name">
+          <div className="headline-small">{name}</div>
+          <div className="label-medium">@{username}</div>
+        </div>
+        {getSendConnectionRequestButton()}
+      </div>
+    );
+  };
+
   const getSearchedContact = () => {
     if (searchedUser) {
       return (
         <div className="searched-contact">
-          <div className="searched-contact-user-info on-primary-container-text">
-            <img src={searchedUser.photoUrl} />
-            <div className="searched-contact-user-name">
-              <div className="headline-small">{searchedUser.name}</div>
-              <div className="label-medium">@{searchedUser.username}</div>
-            </div>
-          </div>
-          {getSendConnectionRequestButton()}
+          {showContactUserInfo(
+            searchedUser.username,
+            searchedUser.name,
+            searchedUser.photoUrl
+          )}
         </div>
       );
     }
@@ -98,7 +116,7 @@ export default function AddNewContactTab() {
   };
 
   return (
-    <div className="add-new-contact-tab">
+    <div className="add-new">
       <div className="search-contact">
         <input
           className="body-large on-secondary-container-text secondary-container"
