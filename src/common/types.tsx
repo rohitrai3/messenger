@@ -10,8 +10,8 @@ export type Message = {
   timestamp: number;
 };
 
-export type GoogleUserData {
+export type GoogleUserData = {
   uid: string;
   name: string;
   photoUrl: string;
-}
+};
