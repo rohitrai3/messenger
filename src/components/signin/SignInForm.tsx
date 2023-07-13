@@ -1,16 +1,7 @@
 import { useState } from "react";
-import { useAppDispatch } from "../../hooks/hooks";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  UserState,
-  setUserName,
-  setUserPhotoUrl,
-  setUserUid,
-  setUserUsername,
-} from "../../store/slices/userSlice";
-import authenticate from "../../services/authentication";
-import { createContact, createUser } from "../../services/database";
 import { CloseIcon, GoogleIcon } from "../../common/icons";
+import { signIn } from "../../services/authenticate";
+import { UserType } from "../../common/enums";
 
 export type SignInFormProps = {
   setAuthenticating: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,10 +9,10 @@ export type SignInFormProps = {
 
 export default function SignInForm({ setAuthenticating }: SignInFormProps) {
   const [username, setUsername] = useState<string>("");
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const notification = location.state?.notification;
+  const [notification, setNotification] = useState<string | null>(
+    sessionStorage.getItem("error")
+  );
+  const [userType, setUserType] = useState<UserType>(UserType.EXISTING);
 
   const updateUsername = () => {
     const signInInputValue = (
@@ -30,34 +21,20 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     setUsername(signInInputValue.trim());
   };
 
-  const signIn = async () => {
+  const signInUser = async () => {
     setAuthenticating(true);
-    const user: UserState = await authenticate();
-    const notification = await createUser(
-      user.uid,
-      username,
-      user.name,
-      user.photoUrl
-    );
-    if (notification.length) {
-      navigate("/", {
-        state: {
-          notification: notification,
-        },
-      });
-    } else {
-      await createContact(username);
-      dispatch(setUserUid(user.uid));
-      dispatch(setUserUsername(username));
-      dispatch(setUserName(user.name));
-      dispatch(setUserPhotoUrl(user.photoUrl));
-      navigate("/home");
-    }
+    sessionStorage.setItem("userType", userType.toString());
+    sessionStorage.setItem("username", username);
+    await signIn();
     setAuthenticating(false);
   };
 
+  const disableButtonCondition =
+    userType === UserType.NEW &&
+    (username.length === 0 || username.match(/\.|\#|\$|\[|\]|\//g));
+
   const isDisableSignIn = () => {
-    if (username.length === 0 || username.match(/\.|\#|\$|\[|\]|\//g)) {
+    if (disableButtonCondition) {
       return true;
     } else {
       return false;
@@ -65,9 +42,14 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
   };
 
   const getDisabledButtonStyle = () => {
-    if (isDisableSignIn()) {
+    if (userType === UserType.NEW && isDisableSignIn()) {
       return "disabled-button";
     }
+  };
+
+  const clearNotification = () => {
+    setNotification("");
+    sessionStorage.removeItem("error");
   };
 
   const getNotification = () => {
@@ -75,26 +57,75 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
       return (
         <div className="notification body-medium error on-error-text">
           {notification}
-          <div onClick={() => navigate("/")}>{CloseIcon}</div>
+          <div onClick={() => clearNotification()}>{CloseIcon}</div>
         </div>
+      );
+    }
+  };
+
+  const toggleSelectUserTypeSwitch = () => {
+    if (userType === UserType.NEW) {
+      setUserType(UserType.EXISTING);
+    } else {
+      setUserType(UserType.NEW);
+    }
+  };
+
+  const newUserSwitch = (
+    <div
+      className="select-user-type-switch"
+      onClick={() => toggleSelectUserTypeSwitch()}
+    >
+      <div className="switch-track-new-user surface-container-highest">
+        <div className="switch-handle-new-user outline"></div>
+      </div>
+    </div>
+  );
+
+  const existingUserSwitch = (
+    <div
+      className="select-user-type-switch"
+      onClick={() => toggleSelectUserTypeSwitch()}
+    >
+      <div className="switch-track-existing-user primary">
+        <div className="switch-handle-existing-user on-primary"></div>
+      </div>
+    </div>
+  );
+
+  const getSelectUserTypeSwitch = () => {
+    if (userType === UserType.NEW) {
+      return newUserSwitch;
+    } else {
+      return existingUserSwitch;
+    }
+  };
+
+  const showUsernameInputField = () => {
+    if (userType === UserType.NEW) {
+      return (
+        <input
+          className="body-large on-primary-container-text primary-container"
+          type="text"
+          placeholder="Enter unique username"
+          value={username}
+          id="signInInput"
+          onChange={() => updateUsername()}
+        />
       );
     }
   };
 
   return (
     <div className="sign-in-form">
-      <input
-        className="body-large on-primary-container-text primary-container"
-        type="text"
-        placeholder="Enter unique username"
-        value={username}
-        id="signInInput"
-        onChange={() => updateUsername()}
-      />
-      <div className="sign-in-input-supporting text"></div>
+      <div className="select-user-type label-large on-background-text">
+        New user
+        {getSelectUserTypeSwitch()} Existing user
+      </div>
+      {showUsernameInputField()}
       <button
         className={`${getDisabledButtonStyle()} primary label-large on-primary-text`}
-        onClick={() => signIn()}
+        onClick={() => signInUser()}
         disabled={isDisableSignIn()}
       >
         {GoogleIcon}

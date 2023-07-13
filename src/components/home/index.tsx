@@ -1,89 +1,128 @@
 import { useEffect, useState } from "react";
-import { useAppSelector } from "../../hooks/hooks";
-import { ContactTab } from "../../common/enums";
-import { useNavigate } from "react-router-dom";
-import AddNewContactTab from "./AddNewContactTab";
-import { TickIcon } from "../../common/icons";
-import ContactsTab from "./ContactsTab";
+import { useAppDispatch } from "../../hooks/hooks";
+import {
+  getAuthenticatedGoogleUserData,
+  signOutUser,
+} from "../../services/authenticate";
+import {
+  checkUidExist,
+  checkUsernameExist,
+  addUser,
+  getUserData,
+  getUsername,
+} from "../../services/database";
+import {
+  UserState,
+  setUserName,
+  setUserPhotoUrl,
+  setUserUid,
+  setUserUsername,
+} from "../../store/slices/userSlice";
+import HomeHeader, { HomeHeaderProps } from "./HomeHeader";
+import Contacts, { ContactsProps } from "./Contacts";
+import HomeFooter from "./HomeFooter";
+import { UserType } from "../../common/enums";
+import { GoogleUserData } from "../../common/types";
 
 export default function Home() {
-  const userName = useAppSelector((state) => state.user.name);
-  const userPhotoUrl = useAppSelector((state) => state.user.photoUrl);
-  const userUsername = useAppSelector((state) => state.user.username);
-  const [selectedTab, setSelectedTab] = useState<ContactTab>(
-    ContactTab.CONTACTS
-  );
-  const navigate = useNavigate();
+  const [initializingUserState, setInitializingUserState] =
+    useState<boolean>(true);
+  const dispatch = useAppDispatch();
 
-  const getSelectionIcon = (tab: ContactTab) => {
-    if (tab === selectedTab) {
-      return TickIcon;
-    }
+  const userAlreadyExist = () => {
+    sessionStorage.setItem(
+      "error",
+      "User already exist. Please sign in as existing user."
+    );
+    signOutUser();
   };
 
-  const getSelectionColor = (tab: ContactTab) => {
-    return tab === selectedTab
-      ? "on-secondary-container-text secondary-container"
-      : "on-surface-text surface";
+  const usernameAlreadyTaken = () => {
+    sessionStorage.setItem(
+      "error",
+      "Username already taken. Please try different username."
+    );
+    signOutUser();
   };
 
-  const changeTab = (tab: ContactTab) => {
-    switch (tab) {
-      case ContactTab.CONTACTS:
-        setSelectedTab(ContactTab.CONTACTS);
-        break;
-      case ContactTab.ADD_NEW:
-        setSelectedTab(ContactTab.ADD_NEW);
-        break;
-    }
+  const userNotExist = () => {
+    sessionStorage.setItem(
+      "error",
+      "User does not exist. Please sign in as new user."
+    );
+    signOutUser();
   };
 
-  const getTabContent = () => {
-    switch (selectedTab) {
-      case ContactTab.CONTACTS:
-        return <ContactsTab />;
-      case ContactTab.ADD_NEW:
-        return <AddNewContactTab />;
+  const setUserState = async (uid: string) => {
+    const username = await getUsername(uid);
+    const userData = await getUserData(username);
+    dispatch(setUserUid(uid));
+    dispatch(setUserUsername(username));
+    dispatch(setUserName(userData.name));
+    dispatch(setUserPhotoUrl(userData.photoUrl));
+    sessionStorage.clear();
+  };
+
+  const initializeUserState = async () => {
+    setInitializingUserState(true);
+    const googleUserData: GoogleUserData = getAuthenticatedGoogleUserData();
+    const userType = sessionStorage.getItem("userType");
+    if (userType) {
+      if (userType === UserType.NEW.toString()) {
+        const isUidExist = await checkUidExist(googleUserData.uid);
+
+        if (isUidExist) {
+          userAlreadyExist();
+        } else {
+          const isUsernameExist = await checkUsernameExist(
+            sessionStorage.getItem("username")!
+          );
+
+          if (isUsernameExist) {
+            usernameAlreadyTaken();
+          } else {
+            const newUserState: UserState = {
+              uid: googleUserData.uid,
+              username: sessionStorage.getItem("username")!,
+              name: googleUserData.name,
+              photoUrl: googleUserData.photoUrl,
+            };
+            await addUser(newUserState);
+            await setUserState(googleUserData.uid);
+          }
+        }
+      } else {
+        const isUidExist = await checkUidExist(googleUserData.uid);
+
+        if (!isUidExist) {
+          userNotExist();
+        } else {
+          await setUserState(googleUserData.uid);
+        }
+      }
+    } else {
+      await setUserState(googleUserData.uid);
     }
+    setInitializingUserState(false);
+  };
+
+  const homeHeaderProps: HomeHeaderProps = {
+    initializingUserState: initializingUserState,
+  };
+
+  const contactsProps: ContactsProps = {
+    initializingUserState: initializingUserState,
   };
 
   useEffect(() => {
-    if (userName === "Unknown") {
-      navigate("/");
-    }
-  });
+    initializeUserState();
+  }, []);
 
   return (
     <div className="home background">
-      <div className="display-small on-background-text">Hello!</div>
-      <img className="profile-photo" src={userPhotoUrl} />
-      <div className="display-medium on-background-text">{userName}</div>
-      <div className="label-large on-background-text">@{userUsername}</div>
-      <div className="horizontal-line outline-variant" />
-      <div className="headline-small on-background-text">
-        Who do you want to chat with?
-      </div>
-      <div className="contacts-panel primary-container">
-        <div className="contacts-tabs">
-          <div
-            className={`contacts-title label-large ${getSelectionColor(
-              ContactTab.CONTACTS
-            )}`}
-            onClick={() => changeTab(ContactTab.CONTACTS)}
-          >
-            {getSelectionIcon(ContactTab.CONTACTS)}Contacts
-          </div>
-          <div
-            className={`add-new-title label-large ${getSelectionColor(
-              ContactTab.ADD_NEW
-            )}`}
-            onClick={() => changeTab(ContactTab.ADD_NEW)}
-          >
-            {getSelectionIcon(ContactTab.ADD_NEW)}Add new
-          </div>
-        </div>
-        <div className="contacts-content">{getTabContent()}</div>
-      </div>
+      <HomeHeader {...homeHeaderProps} />
+      <Contacts {...contactsProps} />
+      <HomeFooter />
     </div>
   );
 }
