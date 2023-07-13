@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
 import { Message } from "../../common/types";
-import { getMessagesOnUpdate } from "../../services/database";
-import { useAppSelector } from "../../hooks/hooks";
+import {
+  getMessagesOnUpdate,
+  getUserData,
+  getUsername,
+} from "../../services/database";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { useLocation } from "react-router-dom";
 import { SpinnerIcon } from "../../common/icons";
+import { getAuthenticatedGoogleUserData } from "../../services/authenticate";
+import {
+  setUserName,
+  setUserPhotoUrl,
+  setUserUid,
+  setUserUsername,
+} from "../../store/slices/userSlice";
 
 export default function Conversation() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -11,10 +22,11 @@ export default function Conversation() {
   const userUsername = useAppSelector((state) => state.user.username);
   const location = useLocation();
   const contactUsername = location.state.username;
+  const dispatch = useAppDispatch();
 
-  const loadMessages = async () => {
+  const loadMessages = () => {
     setLoadingMessages(true);
-    await getMessagesOnUpdate(userUsername, contactUsername, setMessages);
+    getMessagesOnUpdate(userUsername, contactUsername, setMessages);
     setLoadingMessages(false);
   };
 
@@ -55,9 +67,23 @@ export default function Conversation() {
     }
   };
 
+  const setUserStateOnRefresh = async () => {
+    const googleUserData = getAuthenticatedGoogleUserData();
+    const username = await getUsername(googleUserData.uid);
+    const userData = await getUserData(username);
+    dispatch(setUserUid(googleUserData.uid));
+    dispatch(setUserUsername(username));
+    dispatch(setUserName(userData.name));
+    dispatch(setUserPhotoUrl(userData.photoUrl));
+    sessionStorage.clear();
+  };
+
   useEffect(() => {
+    if (userUsername.length === 0) {
+      setUserStateOnRefresh();
+    }
     loadMessages();
-  }, []);
+  }, [userUsername]);
 
   return (
     <div className="conversation">
