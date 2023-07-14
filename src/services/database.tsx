@@ -237,7 +237,9 @@ export const getMessagesOnUpdate = (
   const conversationName = getConversationName(sender, receiver);
 
   onValue(ref(database, `chats/${conversationName}`), (sanpshot) => {
-    setMessages(sanpshot.val());
+    if (sanpshot.exists()) {
+      setMessages(sanpshot.val().reverse());
+    }
   });
 };
 
