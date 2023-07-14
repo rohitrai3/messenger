@@ -72,7 +72,6 @@ button {
   min-width: 300px;
   display: flex;
   align-items: center;
-  margin-top: 20px;
   border-radius: 100px;
 }
 
@@ -244,6 +243,10 @@ button {
   margin-top: 16px;
 }
 
+.home-user-info {
+  margin-top: 20px;
+}
+
 .home-horizontal-line {
   width: 358px;
   margin-top: 20px;
@@ -380,18 +383,14 @@ button {
   align-items: center;
 }
 
-.chat-user-info {
-  display: flex;
-  align-items: center;
+.chat-heading {
   margin-top: 16px;
-  margin-bottom: 16px;
+  text-align: center;
 }
 
-.chat-user-info img {
-  width: 120px;
-  height: 120px;
-  border-radius: 100px;
-  margin-right: 16px;
+.chat-user-info {
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
 .conversation {

@@ -11,7 +11,7 @@ export default function HomeHeader({ initializingUserState }: HomeHeaderProps) {
 
   const getLoadingStyle = () => {
     if (initializingUserState) {
-      return "surface-dim";
+      return "hide-content surface-dim";
     }
   };
 
@@ -26,11 +26,15 @@ export default function HomeHeader({ initializingUserState }: HomeHeaderProps) {
       <div className="home-header-heading display-small on-background-text">
         Hello!
       </div>
-      <div className={`user-info ${getLoadingStyle()}`}>
-        <div className="user-profile-photo">{showUserPorfilePhoto()}</div>
-        <div className="user-name">
-          <div className="display-medium on-background-text">{userName}</div>
-          <div className="label-large on-background-text">@{userUsername}</div>
+      <div className="home-user-info">
+        <div className={`user-info ${getLoadingStyle()}`}>
+          <div className="user-profile-photo">{showUserPorfilePhoto()}</div>
+          <div className="user-name">
+            <div className="display-medium on-background-text">{userName}</div>
+            <div className="label-large on-background-text">
+              @{userUsername}
+            </div>
+          </div>
         </div>
       </div>
       <div className="home-horizontal-line" />
