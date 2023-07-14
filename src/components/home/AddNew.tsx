@@ -22,7 +22,7 @@ export default function AddNew() {
     const searchUserInputValue = (
       document.getElementById("searchUserInput") as HTMLInputElement
     ).value;
-    setSearchUsername(searchUserInputValue);
+    setSearchUsername(searchUserInputValue.trim().toLowerCase());
   };
 
   const checkIsUserConnected = async () => {
@@ -121,7 +121,7 @@ export default function AddNew() {
         <input
           className="body-large on-secondary-container-text secondary-container"
           type="text"
-          placeholder="user@example.com"
+          placeholder="Enter username"
           value={searchUsername}
           onChange={() => updateUsername()}
           id="searchUserInput"
