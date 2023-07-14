@@ -18,7 +18,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     const signInInputValue = (
       document.getElementById("signInInput") as HTMLInputElement
     ).value;
-    setUsername(signInInputValue.trim());
+    setUsername(signInInputValue.trim().toLowerCase());
   };
 
   const signInUser = async () => {
