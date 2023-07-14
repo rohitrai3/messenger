@@ -432,6 +432,8 @@ button {
   bottom: 16px;
   left: 0px;
   overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .message-right {
@@ -439,7 +441,6 @@ button {
   justify-content: right;
   align-items: center;
   margin-top: 8px;
-
 }
 
 .message-left {
@@ -453,12 +454,14 @@ button {
   padding: 12px 24px 12px 24px;
   border: 1px solid var(--md-sys-color-on-primary-light);
   border-radius: 100px;
+  max-inline-size: 70%;
 }
 
 .message-contact {
   padding: 12px 24px 12px 24px;
   border: 1px solid var(--md-sys-color-on-secondary-light);
   border-radius: 100px;
+  max-inline-size: 70%;
 }
 
 @media (prefers-color-scheme: dark) {

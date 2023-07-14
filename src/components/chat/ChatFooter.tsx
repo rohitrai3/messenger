@@ -20,15 +20,19 @@ export default function ChatFooter() {
     setMessageText(newMessageText);
   };
 
+  const validMessage = messageText.trim().length > 0;
+
   const sendMessage = async () => {
     setSendingMessage(true);
-    const message: Message = {
-      message: messageText,
-      sender: userUsername,
-      timestamp: Date.now(),
-    };
-    await addMessage(userUsername, contactUser, message);
-    setMessageText("");
+    if (validMessage) {
+      const message: Message = {
+        message: messageText.trim(),
+        sender: userUsername,
+        timestamp: Date.now(),
+      };
+      await addMessage(userUsername, contactUser, message);
+      setMessageText("");
+    }
     setSendingMessage(false);
   };
 
