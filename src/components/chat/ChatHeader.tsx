@@ -17,20 +17,22 @@ export default function ChatHeader() {
     setLoadingUser(false);
   };
 
-  const getContactUserInfo = () => {
+  const getLoadingStyle = () => {
     if (loadingUser) {
-      return SpinnerIcon;
-    } else {
-      return (
-        <div className="chat-user-info">
-          <img src={contactUserData?.photoUrl} />
-          <div className="chat-user-name">
-            <div className="headline-large">{contactUserData?.name}</div>
-            <div className="label-large">@{contactUserData?.username}</div>
-          </div>
-        </div>
-      );
+      return "hide-text surface-dim";
     }
+  };
+
+  const getContactUserInfo = () => {
+    return (
+      <div className={`contact-user-info ${getLoadingStyle()}`}>
+        <img src={contactUserData?.photoUrl} />
+        <div className="contact-user-name">
+          <div className="headline-small">{contactUserData?.name}</div>
+          <div className="label-medium">@{contactUserData?.username}</div>
+        </div>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -39,8 +41,8 @@ export default function ChatHeader() {
 
   return (
     <div className="chat-header on-background-text">
-      <div className="display-small">You are talking to</div>
-      {getContactUserInfo()}
+      <div className="chat-heading display-small">You are talking to</div>
+      <div className="chat-header-user-info">{getContactUserInfo()}</div>
     </div>
   );
 }

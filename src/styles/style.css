@@ -84,6 +84,7 @@ button {
   flex: 1;
   display: flex;
   align-items: center;
+  border-radius: 100px;
 }
 
 .contact-user-info img {
@@ -123,6 +124,10 @@ button {
 
 .contact-list-item {
   margin-bottom: 16px;
+}
+
+.hide-text {
+  color: transparent;
 }
 
 /* Sign in */
@@ -380,18 +385,14 @@ button {
   align-items: center;
 }
 
-.chat-user-info {
-  display: flex;
-  align-items: center;
+.chat-heading {
+  text-align: center;
   margin-top: 16px;
-  margin-bottom: 16px;
 }
 
-.chat-user-info img {
-  width: 120px;
-  height: 120px;
-  border-radius: 100px;
-  margin-right: 16px;
+.chat-header-user-info {
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
 .conversation {
