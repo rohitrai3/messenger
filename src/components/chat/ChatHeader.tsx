@@ -7,7 +7,7 @@ export default function ChatHeader() {
   const location = useLocation();
   const contactUsername = location.state.username;
   const [contactUserData, setConnectUserData] = useState<UserData>();
-  const [loadingUser, setLoadingUser] = useState<boolean>(false);
+  const [loadingUser, setLoadingUser] = useState<boolean>(true);
 
   const loadContactUserData = async () => {
     setLoadingUser(true);
@@ -18,17 +18,29 @@ export default function ChatHeader() {
 
   const getLoadingStyle = () => {
     if (loadingUser) {
-      return "hide-content surface-dim";
+      return "surface-dim";
+    }
+  };
+
+  const showContactProfilePhoto = () => {
+    if (!loadingUser) {
+      return <img src={contactUserData?.photoUrl} />;
+    }
+  };
+
+  const showContactUsername = () => {
+    if (!loadingUser) {
+      return <>@{contactUserData?.username}</>;
     }
   };
 
   const getContactUserInfo = () => {
     return (
-      <div className={`contact-user-info ${getLoadingStyle}`}>
-        <img src={contactUserData?.photoUrl} />
+      <div className="contact-user-info">
+        {showContactProfilePhoto()}
         <div className="contact-user-name">
           <div className="headline-large">{contactUserData?.name}</div>
-          <div className="label-large">@{contactUserData?.username}</div>
+          <div className="label-large">{showContactUsername()}</div>
         </div>
       </div>
     );
@@ -41,7 +53,9 @@ export default function ChatHeader() {
   return (
     <div className="chat-header on-background-text">
       <div className="chat-heading display-small">You are talking to</div>
-      <div className="chat-user-info">{getContactUserInfo()}</div>
+      <div className={`chat-user-info ${getLoadingStyle()}`}>
+        {getContactUserInfo()}
+      </div>
     </div>
   );
 }
