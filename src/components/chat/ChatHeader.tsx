@@ -52,7 +52,7 @@ export default function ChatHeader() {
 
   return (
     <div className="chat-header on-background-text">
-      <div className="chat-heading display-small">You are talking to</div>
+      <div className="chat-heading headline-medium">You are talking to</div>
       <div className={`chat-user-info ${getLoadingStyle()}`}>
         {getContactUserInfo()}
       </div>
