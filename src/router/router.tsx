@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import SignIn from "../components/signin";
+import SignIn from "../components/signIn";
 import Home from "../components/home";
 import Chat from "../components/chat";
 
