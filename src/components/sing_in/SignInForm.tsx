@@ -29,20 +29,11 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     setAuthenticating(false);
   };
 
-  const disableButtonCondition =
-    userType === UserType.NEW &&
-    (username.length === 0 || username.match(/\.|\#|\$|\[|\]|\//g));
-
-  const isDisableSignIn = () => {
-    if (disableButtonCondition) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const disableButtonCondition = (userType === UserType.NEW &&
+    (username.length === 0 || username.match(/\.|\#|\$|\[|\]|\//g))) as boolean;
 
   const getDisabledButtonStyle = () => {
-    if (userType === UserType.NEW && isDisableSignIn()) {
+    if (userType === UserType.NEW && disableButtonCondition) {
       return "disabled-button";
     }
   };
@@ -126,7 +117,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
       <button
         className={`${getDisabledButtonStyle()} primary label-large on-primary-text`}
         onClick={() => signInUser()}
-        disabled={isDisableSignIn()}
+        disabled={disableButtonCondition}
       >
         {GoogleIcon}
         Sign in with Google

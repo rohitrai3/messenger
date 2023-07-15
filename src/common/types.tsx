@@ -1,3 +1,5 @@
+import { FeedbackAction } from "./enums";
+
 export type UserData = {
   username: string;
   name: string;
@@ -14,4 +16,9 @@ export type GoogleUserData = {
   uid: string;
   name: string;
   photoUrl: string;
+};
+
+export type FeedbackData = {
+  message: string;
+  status: FeedbackAction;
 };
