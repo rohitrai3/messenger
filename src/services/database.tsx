@@ -1,4 +1,4 @@
-import { Message, UserData } from "../common/types";
+import { FeedbackData, Message, UserData } from "../common/types";
 import { UserState } from "../store/slices/userSlice";
 import app from "./firebase";
 import { child, get, getDatabase, onValue, ref, set } from "firebase/database";
@@ -226,6 +226,35 @@ export const addContact = async (username: string, contact: string) => {
     })
     .catch((error) => {
       console.log("Error while fetching contact: ", error);
+    });
+};
+
+export const addFeedback = async (username: string, feedback: FeedbackData) => {
+  await get(child(ref(database), `feedbacks/${username}`))
+    .then(async (snapshot) => {
+      if (snapshot.exists()) {
+        const fetchedFeedbacks = snapshot.val();
+        fetchedFeedbacks.push(feedback);
+
+        await set(ref(database, `feedbacks/${username}`), fetchedFeedbacks)
+          .then(() => {
+            console.log("Feedback saved successfully: ", username, feedback);
+          })
+          .catch((error) => {
+            console.log("Error while saving feedback: ", error);
+          });
+      } else {
+        await set(ref(database, `feedbacks/${username}`), [feedback])
+          .then(() => {
+            console.log("Feedback saved successfully: ", username, feedback);
+          })
+          .catch((error) => {
+            console.log("Error while saving feedback: ", error);
+          });
+      }
+    })
+    .catch((error) => {
+      console.log("Error while fetching feedback: ", error);
     });
 };
 
