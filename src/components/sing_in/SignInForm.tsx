@@ -107,6 +107,12 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     }
   };
 
+  document.onkeydown = (event) => {
+    if (event.key === "Enter") {
+      (document.getElementById("signInButton") as HTMLButtonElement).click();
+    }
+  };
+
   return (
     <div className="sign-in-form">
       <div className="select-user-type label-large on-background-text">
@@ -118,6 +124,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
         className={`${getDisabledButtonStyle()} primary label-large on-primary-text`}
         onClick={() => signInUser()}
         disabled={disableButtonCondition}
+        id="signInButton"
       >
         {GoogleIcon}
         Sign in with Google

@@ -44,10 +44,19 @@ export default function ChatFooter() {
         <div
           className="primary-action-icon primary"
           onClick={() => sendMessage()}
+          id="sendMessageButton"
         >
           {SendIcon}
         </div>
       );
+    }
+  };
+
+  document.onkeydown = (event) => {
+    if (event.key === "Enter") {
+      (
+        document.getElementById("sendMessageButton") as HTMLButtonElement
+      ).click();
     }
   };
 

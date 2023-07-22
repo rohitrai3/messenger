@@ -41,8 +41,6 @@ export default function Feedback({ setOpenFeedback }: FeedbackProps) {
       : DislikeOutlineIcon;
   };
 
-  console.log(feedbackAction);
-
   const sendFeedback = async () => {
     setSendingFeedback(true);
     const feedback: FeedbackData = {
@@ -55,13 +53,25 @@ export default function Feedback({ setOpenFeedback }: FeedbackProps) {
   };
 
   const feedbackButton = (
-    <button className="primary on-primary-text" onClick={() => sendFeedback()}>
+    <button
+      className="primary on-primary-text"
+      onClick={() => sendFeedback()}
+      id="sendFeedbackButton"
+    >
       Submit
     </button>
   );
 
   const showSubmitFeedbackButton = () => {
     return sendingFeedback ? SpinnerIcon : feedbackButton;
+  };
+
+  document.onkeydown = (event) => {
+    if (event.key === "Enter") {
+      (
+        document.getElementById("sendFeedbackButton") as HTMLButtonElement
+      ).click();
+    }
   };
 
   return (
