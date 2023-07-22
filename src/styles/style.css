@@ -56,6 +56,11 @@ button {
   fill: var(--md-sys-color-on-error-light);
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
 .user-profile-photo {
   width: 120px;
   height: 120px;
@@ -68,20 +73,11 @@ button {
   height: 120px;
 }
 
-.user-info {
-  min-width: 300px;
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-  border-radius: 100px;
-}
-
 .user-name {
   margin-left: 16px;
 }
 
 .contact-user-info {
-  flex: 1;
   display: flex;
   align-items: center;
 }
@@ -242,6 +238,11 @@ button {
   flex-direction: column;
   align-items: center;
   margin-top: 16px;
+}
+
+.home-user-info {
+  margin-top: 20px;
+  border-radius: 100px;
 }
 
 .home-horizontal-line {
@@ -470,18 +471,18 @@ button {
   align-items: center;
 }
 
-.chat-user-info {
-  display: flex;
-  align-items: center;
+.chat-heading {
   margin-top: 16px;
-  margin-bottom: 16px;
+  text-align: center;
 }
 
-.chat-user-info img {
-  width: 120px;
-  height: 120px;
+.chat-user-info {
+  min-height: 60px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
   border-radius: 100px;
-  margin-right: 16px;
 }
 
 .conversation {

@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { UserData } from "../../common/types";
 import { getUserData } from "../../services/database";
-import { SpinnerIcon } from "../../common/icons";
 
 export default function ChatHeader() {
   const location = useLocation();
   const contactUsername = location.state.username;
   const [contactUserData, setConnectUserData] = useState<UserData>();
-  const [loadingUser, setLoadingUser] = useState<boolean>(false);
+  const [loadingUser, setLoadingUser] = useState<boolean>(true);
 
   const loadContactUserData = async () => {
     setLoadingUser(true);
@@ -17,20 +16,34 @@ export default function ChatHeader() {
     setLoadingUser(false);
   };
 
-  const getContactUserInfo = () => {
+  const getLoadingStyle = () => {
     if (loadingUser) {
-      return SpinnerIcon;
-    } else {
-      return (
-        <div className="chat-user-info">
-          <img src={contactUserData?.photoUrl} />
-          <div className="chat-user-name">
-            <div className="headline-large">{contactUserData?.name}</div>
-            <div className="label-large">@{contactUserData?.username}</div>
-          </div>
-        </div>
-      );
+      return "surface-dim";
     }
+  };
+
+  const showContactProfilePhoto = () => {
+    if (!loadingUser) {
+      return <img src={contactUserData?.photoUrl} />;
+    }
+  };
+
+  const showContactUsername = () => {
+    if (!loadingUser) {
+      return <>@{contactUserData?.username}</>;
+    }
+  };
+
+  const getContactUserInfo = () => {
+    return (
+      <div className="contact-user-info">
+        {showContactProfilePhoto()}
+        <div className="contact-user-name">
+          <div className="headline-large">{contactUserData?.name}</div>
+          <div className="label-large">{showContactUsername()}</div>
+        </div>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -39,8 +52,10 @@ export default function ChatHeader() {
 
   return (
     <div className="chat-header on-background-text">
-      <div className="display-small">You are talking to</div>
-      {getContactUserInfo()}
+      <div className="chat-heading headline-medium">You are talking to</div>
+      <div className={`chat-user-info ${getLoadingStyle()}`}>
+        {getContactUserInfo()}
+      </div>
     </div>
   );
 }
