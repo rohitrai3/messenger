@@ -1,6 +1,6 @@
 /* Global */
 
-body {
+* {
   margin: 0px;
 }
 
@@ -138,6 +138,28 @@ button {
   flex-direction: column;
   align-items: center;
   margin-bottom: 100px;
+}
+
+.sign-in-messenger {
+  display: flex;
+  align-items: center;
+}
+
+.messenger-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  padding: 4px;
+  margin-right: 8px;
+  background-color: var(--md-sys-color-primary-container-dark);
+}
+
+.messenger-logo-send {
+  fill: var(--md-sys-color-primary-dark);
+}
+
+.messenger-logo-receive {
+  fill: var(--md-sys-color-secondary-dark);
 }
 
 .sign-in-form {
@@ -585,6 +607,18 @@ button {
   }
 
   /* Sign in */
+
+  .messenger-logo {
+    background-color: var(--md-sys-color-primary-container-light);
+  }
+
+  .messenger-logo-send {
+    fill: var(--md-sys-color-primary-light);
+  }
+  
+  .messenger-logo-receive {
+    fill: var(--md-sys-color-secondary-light);
+  }
 
   .sign-in-form input {
     border: 1px solid var(--md-sys-color-primary-dark);
