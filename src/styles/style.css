@@ -175,6 +175,10 @@ button {
   margin-bottom: 20px;
 }
 
+.select-user-type-label {
+  cursor: pointer;
+}
+
 .switch-track-new-user {
   width: 52px;
   height: 32px;
