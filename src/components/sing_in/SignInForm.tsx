@@ -113,6 +113,10 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     }
   };
 
+  const getButtonLabel = () => {
+    return userType === UserType.NEW ? "Sign up with Google" : "Sign in with Google";
+  }
+
   return (
     <div className="sign-in-form">
       <div className="select-user-type label-large on-background-text">
@@ -138,7 +142,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
         id="signInButton"
       >
         {GoogleIcon}
-        Sign in with Google
+        {getButtonLabel()}
       </button>
       {getNotification()}
     </div>
