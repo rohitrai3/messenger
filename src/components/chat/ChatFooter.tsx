@@ -3,7 +3,7 @@ import { BeforeIcon, SendIcon, SpinnerIcon } from "../../common/icons";
 import { useState } from "react";
 import { addMessage } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
-import { Message } from "../../common/types";
+import { AddMessageInput } from "../../common/types";
 
 export default function ChatFooter() {
   const navigate = useNavigate();
@@ -25,12 +25,15 @@ export default function ChatFooter() {
   const sendMessage = async () => {
     setSendingMessage(true);
     if (validMessage) {
-      const message: Message = {
-        message: messageText.trim(),
-        sender: userUsername,
-        timestamp: Date.now(),
+      const addMessageInput: AddMessageInput = {
+        messageData: {
+          sender: userUsername,
+          receiver: contactUser,
+          message: messageText.trim(),
+          timestamp: Date.now(),
+        },
       };
-      await addMessage(userUsername, contactUser, message);
+      await addMessage(addMessageInput);
       setMessageText("");
     }
     setSendingMessage(false);

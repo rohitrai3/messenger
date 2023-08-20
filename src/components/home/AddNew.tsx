@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { UserData } from "../../common/types";
+import { AddConnectionRequestInput, UserData } from "../../common/types";
 import {
   addConnectionRequest,
-  getConnectedUsers,
-  getUserData,
+  getConnections,
+  getUser,
 } from "../../services/database";
 import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/icons";
 import { useAppSelector } from "../../hooks/hooks";
@@ -26,8 +26,9 @@ export default function AddNew() {
   };
 
   const checkIsUserConnected = async () => {
-    const connectedUsers = await getConnectedUsers(userUsername);
-    if (!connectedUsers.includes(searchUsername)) {
+    const connectedUsers = await getConnections(userUsername);
+    const usernames = connectedUsers.map((user) => user.username);
+    if (!usernames.includes(searchUsername)) {
       setIsUserConnected(false);
     } else {
       setIsUserConnected(true);
@@ -36,7 +37,7 @@ export default function AddNew() {
 
   const searchUser = async () => {
     setSearching(true);
-    const userData = await getUserData(searchUsername);
+    const userData = await getUser(searchUsername);
     setSearchedUser(userData);
     await checkIsUserConnected();
     setSearchUsername("");
@@ -45,7 +46,11 @@ export default function AddNew() {
 
   const sendConnectionRequest = async () => {
     setSendingConnectinRequest(true);
-    await addConnectionRequest(userUsername, searchedUser?.username!);
+    const addConnectionRequestInput: AddConnectionRequestInput = {
+      sender: userUsername,
+      receiver: searchedUser?.username!,
+    };
+    await addConnectionRequest(addConnectionRequestInput);
     setIsUserConnected(true);
     setSendingConnectinRequest(false);
   };

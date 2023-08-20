@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { signOutUser } from "../../services/authenticate";
 import Feedback, { FeedbackProps } from "./Feedback";
+import { useAppDispatch } from "../../hooks/hooks";
+import { setUserIsAuthenticated } from "../../store/slices/userSlice";
 
 export default function HomeFooter() {
   const [openFeedback, setOpenFeedback] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   const feedbackProps: FeedbackProps = {
     setOpenFeedback: setOpenFeedback,
@@ -14,12 +17,15 @@ export default function HomeFooter() {
       return <Feedback {...feedbackProps} />;
     }
   };
+
+  const signOut = () => {
+    signOutUser();
+    dispatch(setUserIsAuthenticated(false));
+  };
+
   return (
     <div className="home-footer">
-      <button
-        className="sign-out-button label-large"
-        onClick={() => signOutUser()}
-      >
+      <button className="sign-out-button label-large" onClick={() => signOut()}>
         Sign out
       </button>
       <button
