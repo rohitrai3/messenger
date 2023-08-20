@@ -1,0 +1,6 @@
+{
+  "serviceEndpointUrl": "https://beta.messengerservice.rohitrai.dev/",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

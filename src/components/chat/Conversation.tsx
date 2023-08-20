@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import { Message } from "../../common/types";
-import {
-  getMessagesOnUpdate,
-  getUserData,
-  getUsername,
-} from "../../services/database";
+import { MessageData } from "../../common/types";
+import { getMessages, getUser, getUsername } from "../../services/database";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { useLocation } from "react-router-dom";
 import { SpinnerIcon } from "../../common/icons";
@@ -17,16 +13,17 @@ import {
 } from "../../store/slices/userSlice";
 
 export default function Conversation() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessageData[]>([]);
   const [loadingMessages, setLoadingMessages] = useState<boolean>(false);
   const userUsername = useAppSelector((state) => state.user.username);
   const location = useLocation();
   const contactUsername = location.state.username;
   const dispatch = useAppDispatch();
 
-  const loadMessages = () => {
+  const loadMessages = async () => {
     setLoadingMessages(true);
-    getMessagesOnUpdate(userUsername, contactUsername, setMessages);
+    const messageDataList = await getMessages(userUsername, contactUsername);
+    setMessages(messageDataList);
     setLoadingMessages(false);
   };
 
@@ -70,7 +67,7 @@ export default function Conversation() {
   const setUserStateOnRefresh = async () => {
     const googleUserData = getAuthenticatedGoogleUserData();
     const username = await getUsername(googleUserData.uid);
-    const userData = await getUserData(username);
+    const userData = await getUser(username);
     dispatch(setUserUid(googleUserData.uid));
     dispatch(setUserUsername(username));
     dispatch(setUserName(userData.name));
