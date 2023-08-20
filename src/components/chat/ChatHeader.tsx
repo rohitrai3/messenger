@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { UserData } from "../../common/types";
-import { getUserData } from "../../services/database";
+import { getUser } from "../../services/database";
 
 export default function ChatHeader() {
   const location = useLocation();
@@ -11,7 +11,7 @@ export default function ChatHeader() {
 
   const loadContactUserData = async () => {
     setLoadingUser(true);
-    const userData = await getUserData(contactUsername);
+    const userData = await getUser(contactUsername);
     setConnectUserData(userData);
     setLoadingUser(false);
   };

@@ -6,9 +6,10 @@ export type UserData = {
   photoUrl: string;
 };
 
-export type Message = {
-  message: string;
+export type MessageData = {
   sender: string;
+  receiver: string;
+  message: string;
   timestamp: number;
 };
 
@@ -21,4 +22,24 @@ export type GoogleUserData = {
 export type FeedbackData = {
   message: string;
   status: FeedbackAction;
+};
+
+export type AddUserInput = {
+  uid: string;
+  userData: UserData;
+};
+
+export type AddConnectionRequestInput = {
+  sender: string;
+  receiver: string;
+};
+
+export type AddMessageInput = {
+  messageData: MessageData;
+};
+
+export type AcceptConnectionRequestInput = {
+  user: string;
+  connection: string;
+  connectionRequestKey: string;
 };

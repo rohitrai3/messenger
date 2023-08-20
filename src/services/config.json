@@ -1,0 +1,6 @@
+{
+  "serviceEndpointUrl": "http://messengerservice-env.eba-gmtv7qrf.ap-south-1.elasticbeanstalk.com/",
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

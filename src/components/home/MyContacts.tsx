@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UserData } from "../../common/types";
-import { getConnectedUsersOnUpdate } from "../../services/database";
+import { getConnections } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { NextIcon, SpinnerIcon } from "../../common/icons";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,8 @@ export default function MyContacts({ initializingUserState }: MyContactsProps) {
 
   const loadConnectedUsersData = async () => {
     setLoadingUsers(true);
-    await getConnectedUsersOnUpdate(userUsername, setConnectedUsersData);
+    const userDataList = await getConnections(userUsername);
+    setConnectedUsersData(userDataList);
     setLoadingUsers(false);
   };
 

@@ -4,11 +4,23 @@ import "../styles/theme.css";
 import { useEffect, useState } from "react";
 import { checkAuthentication } from "../services/authenticate";
 import { SpinnerIcon } from "../common/icons";
+import { useAppDispatch, useAppSelector } from "../hooks/hooks";
+import { setUserIsAuthenticated } from "../store/slices/userSlice";
 
 function App() {
+  const isUserAuthenticated = useAppSelector(
+    (state) => state.user.isAuthenticated
+  );
   const [loading, setLoading] = useState<boolean>(true);
-  const [isUserAuthenticated, setIsUserAuthenticated] =
-    useState<boolean>(false);
+  const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+
+  const checkUserSignIn = () => {
+    checkAuthentication(setIsUserSignedIn, setLoading);
+    if (isUserSignedIn) {
+      dispatch(setUserIsAuthenticated(true));
+    }
+  };
 
   const getRoutes = () => {
     if (loading) {
@@ -21,8 +33,8 @@ function App() {
   };
 
   useEffect(() => {
-    checkAuthentication(setLoading, setIsUserAuthenticated);
-  }, []);
+    checkUserSignIn();
+  }, [isUserSignedIn]);
 
   return getRoutes();
 }
