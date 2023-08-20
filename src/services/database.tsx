@@ -1,232 +1,146 @@
-import { FeedbackData, Message, UserData } from "../common/types";
-import { UserState } from "../store/slices/userSlice";
+import {
+  AcceptConnectionRequestInput,
+  AddConnectionRequestInput,
+  AddMessageInput,
+  AddUserInput,
+  FeedbackData,
+  MessageData,
+  UserData,
+} from "../common/types";
 import app from "./firebase";
-import { child, get, getDatabase, onValue, ref, set } from "firebase/database";
+import { child, get, getDatabase, ref, set } from "firebase/database";
+import config from "./config.json";
 
 const database = getDatabase(app);
+const baseUrl = config.serviceEndpointUrl;
+const headers = config.headers;
 
-const getConversationName = (sender: string, receiver: string) => {
-  return sender < receiver ? sender + "_" + receiver : receiver + "_" + sender;
-};
-
-export const addUser = async (userState: UserState) => {
-  await set(ref(database, `users/${userState.uid}`), {
-    username: userState.username,
-  })
-    .then(() => {
-      console.log("User saved successfully: ", userState.uid);
-    })
-    .catch((error) => {
-      console.log("Error while saving user: ", error);
-    });
-
-  await set(ref(database, `users/${userState.username}`), {
-    name: userState.name,
-    photoUrl: userState.photoUrl,
-  })
-    .then(() => {
-      console.log("User data saved successfully: ", userState.username);
-    })
-    .catch((error) => {
-      console.log("Error while saving user data: ", error);
-    });
+export const addUser = async (input: AddUserInput) => {
+  await fetch(`${baseUrl}user/add-user`, {
+    method: "POST",
+    body: JSON.stringify(input),
+    headers: headers,
+  }).catch((error) => {
+    console.log("error: ", error);
+  });
 };
 
 export const addConnectionRequest = async (
-  requester: string,
-  requestee: string
+  input: AddConnectionRequestInput
 ) => {
-  const requests: string[] = [requester];
-  var isRequestExist: boolean = false;
-
-  await get(child(ref(database), `requests/${requestee}`))
-    .then(async (snapshot) => {
-      if (snapshot.exists()) {
-        const fetchedRequests: string[] = snapshot.val();
-        isRequestExist = fetchedRequests.includes(requester);
-        fetchedRequests.forEach((request) => {
-          requests.push(request);
-        });
-      } else {
-        console.log(
-          "Connection requests does not exist: ",
-          requester,
-          requestee
-        );
-      }
-
-      if (!isRequestExist) {
-        await set(ref(database, `requests/${requestee}`), requests)
-          .then(() => {
-            console.log(
-              "Connection request saved successfully: ",
-              requester,
-              requestee
-            );
-          })
-          .catch((error) => {
-            console.log("Error while saving connection request: ", error);
-          });
-      }
-    })
-    .catch((error) => {
-      console.log("Error while fetching connection requests: ", error);
-    });
+  await fetch(`${baseUrl}connection/add-connection-request`, {
+    method: "POST",
+    body: JSON.stringify(input),
+    headers: headers,
+  }).catch((error) => {
+    console.log("error: ", error);
+  });
 };
 
-export const addMessage = async (
-  sender: string,
-  receiver: string,
-  message: Message
+export const addMessage = async (input: AddMessageInput) => {
+  await fetch(`${baseUrl}chat/add-message`, {
+    method: "POST",
+    body: JSON.stringify(input),
+    headers: headers,
+  }).catch((error) => {
+    console.log("error: ", error);
+  });
+};
+
+export const acceptConnectionRequest = async (
+  input: AcceptConnectionRequestInput
 ) => {
-  const conversationName = getConversationName(sender, receiver);
-  var fetchedMessages: Message[] = [];
-
-  await get(child(ref(database), `chats/${conversationName}`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        fetchedMessages = snapshot.val();
-      }
-    })
-    .catch((error) => {
-      console.log("Error while fetching chats: ", error);
-    });
-
-  fetchedMessages.push(message);
-
-  await set(ref(database, `chats/${conversationName}`), fetchedMessages)
-    .then(() => {
-      console.log("Message saved successfully: ", conversationName);
-    })
-    .catch((error) => {
-      console.log("Error while saving message: ", error);
-    });
+  await fetch(`${baseUrl}connection/accept-connection-request`, {
+    method: "POST",
+    body: JSON.stringify(input),
+    headers: headers,
+  }).catch((error) => {
+    console.log("error: ", error);
+  });
 };
 
 export const getUsername = async (uid: string) => {
-  var username: string = "";
+  var username = "";
 
-  await get(child(ref(database), `users/${uid}`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        username = snapshot.val().username;
-      } else {
-        console.log("User does not exist: ", uid);
-      }
+  await fetch(`${baseUrl}user/get-username/${uid}`, {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      username = data.username;
     })
     .catch((error) => {
-      console.log("Error while fetching user: ", error);
+      console.log("error: ", error);
     });
 
   return username;
 };
 
-export const getUserData = async (username: string) => {
-  const userData: UserData = {
+export const getUser = async (username: string) => {
+  var userData: UserData = {
     username: username,
-    name: "Unknown",
-    photoUrl: "Unknown",
+    name: "",
+    photoUrl: "",
   };
 
-  await get(child(ref(database), `users/${username}`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        userData.name = snapshot.val().name;
-        userData.photoUrl = snapshot.val().photoUrl;
-      } else {
-        console.log("User data does not exist: ", username);
-      }
+  await fetch(`${baseUrl}user/get-user/${username}`, {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      userData = data.userData;
     })
     .catch((error) => {
-      console.log("Error while fetching user data: ", error);
+      console.log("error: ", error);
     });
 
   return userData;
 };
 
-export const getConnectionRequestsOnUpdate = async (
-  username: string,
-  setConnectionRequests: React.Dispatch<React.SetStateAction<UserData[]>>
-) => {
-  const usersData: UserData[] = [];
+export const getConnectionRequests = async (username: string) => {
+  var requestIdToUserData: Map<string, UserData> = new Map();
 
-  onValue(ref(database, `requests/${username}`), async (snapshot) => {
-    if (snapshot.exists()) {
-      const usernames: string[] = snapshot.val();
-      for (const username of usernames) {
-        const userData = await getUserData(username);
-        usersData.push(userData);
-      }
-    } else {
-      console.log("Connection requests does not exist: ", username);
-    }
-    setConnectionRequests(usersData);
-  });
-};
-
-export const getConnectedUsers = async (username: string) => {
-  var connectedUsers: string[] = [];
-
-  await get(child(ref(database), `contacts/${username}`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        connectedUsers = snapshot.val();
-      }
+  await fetch(`${baseUrl}connection/get-connection-requests/${username}`, {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      requestIdToUserData = new Map(Object.entries(data.requestIdToUserData));
     })
     .catch((error) => {
-      console.log("Error while fetching contacts: ", error);
+      console.log("error: ", error);
     });
 
-  return connectedUsers;
+  return requestIdToUserData;
 };
 
-export const getConnectedUsersOnUpdate = async (
-  username: string,
-  setConnectedUsersData: React.Dispatch<React.SetStateAction<UserData[]>>
-) => {
-  const usersData: UserData[] = [];
+export const getConnections = async (username: string) => {
+  var userDataList: UserData[] = [];
 
-  onValue(ref(database, `contacts/${username}`), async (snapshot) => {
-    if (snapshot.exists()) {
-      const usernames: string[] = snapshot.val();
-      for (const username of usernames) {
-        const userData = await getUserData(username);
-        usersData.push(userData);
-      }
-    } else {
-      console.log("Contacts does not exist: ", username);
-    }
-    setConnectedUsersData(usersData);
-  });
-};
-
-export const addContact = async (username: string, contact: string) => {
-  await get(child(ref(database), `contacts/${username}`))
-    .then(async (snapshot) => {
-      if (snapshot.exists()) {
-        const fetchedContacts = snapshot.val();
-        fetchedContacts.push(contact);
-
-        await set(ref(database, `contacts/${username}`), fetchedContacts)
-          .then(() => {
-            console.log("Contact saved successfully: ", username, contact);
-          })
-          .catch((error) => {
-            console.log("Error while saving contact: ", error);
-          });
-      } else {
-        await set(ref(database, `contacts/${username}`), [contact])
-          .then(() => {
-            console.log("Contact saved successfully: ", username, contact);
-          })
-          .catch((error) => {
-            console.log("Error while saving contact: ", error);
-          });
-      }
+  await fetch(`${baseUrl}connection/get-connections/${username}`, {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      userDataList = data.userDataList;
     })
     .catch((error) => {
-      console.log("Error while fetching contact: ", error);
+      console.log("error: ", error);
     });
+
+  return userDataList;
 };
 
 export const addFeedback = async (username: string, feedback: FeedbackData) => {
@@ -258,73 +172,69 @@ export const addFeedback = async (username: string, feedback: FeedbackData) => {
     });
 };
 
-export const getMessagesOnUpdate = (
-  sender: string,
-  receiver: string,
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
-) => {
-  const conversationName = getConversationName(sender, receiver);
+export const getMessages = async (sender: string, receiver: string) => {
+  var messageDataList: MessageData[] = [];
 
-  onValue(ref(database, `chats/${conversationName}`), (sanpshot) => {
-    if (sanpshot.exists()) {
-      setMessages(sanpshot.val().reverse());
+  await fetch(
+    `${baseUrl}chat/get-messages?sender=${sender}&receiver=${receiver}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
-  });
-};
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      messageDataList = data.messageDataList;
+    })
+    .catch((error) => {
+      console.log("error: ", error);
+    });
 
-export const removeConnectionRequest = async (
-  username: string,
-  contact: string
-) => {
-  await get(child(ref(database), `requests/${username}`)).then(
-    async (snapshot) => {
-      if (snapshot.exists()) {
-        const fetchedRequests = snapshot.val();
-        fetchedRequests.splice(fetchedRequests.indexOf(contact), 1);
-        await set(ref(database, `requests/${username}`), fetchedRequests)
-          .then(() => {
-            console.log(
-              "Connection request saved successfully: ",
-              username,
-              contact
-            );
-          })
-          .catch((error) => {
-            console.log("Error while saving connection request: ", error);
-          });
-      }
-    }
-  );
+  return messageDataList;
 };
 
 export const checkUidExist = async (uid: string) => {
-  var isUidExist: boolean = false;
+  console.log("checking uid exist...");
+  var isUidExist = false;
 
-  await get(child(ref(database), `users/${uid}`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        isUidExist = true;
-      }
+  await fetch(`${baseUrl}user/check-uid-exist/${uid}`, {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      isUidExist = data.isUidExist;
     })
     .catch((error) => {
-      console.log("Error while checking uid: ", error);
+      console.log("error: ", error);
     });
+  console.log("...done uid checking");
 
   return isUidExist;
 };
 
 export const checkUsernameExist = async (username: string) => {
-  var isUsernameExist: boolean = false;
+  console.log("checking username exist...");
+  var isUsernameExist = false;
 
-  await get(child(ref(database), `users/${username}`))
-    .then((snapshot) => {
-      if (snapshot.exists()) {
-        isUsernameExist = true;
-      }
+  await fetch(`${baseUrl}user/check-username-exist/${username}`, {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      isUsernameExist = data.isUsernameExist;
     })
     .catch((error) => {
-      console.log("Error while checking username: ", error);
+      console.log("error: ", error);
     });
+  console.log("...done username checking");
 
   return isUsernameExist;
 };

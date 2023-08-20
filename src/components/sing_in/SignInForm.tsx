@@ -1,7 +1,19 @@
 import { useState } from "react";
 import { CloseIcon, GoogleIcon } from "../../common/icons";
-import { signIn } from "../../services/authenticate";
+import {
+  getAuthenticatedGoogleUserData,
+  signIn,
+  signOutUser,
+} from "../../services/authenticate";
 import { UserType } from "../../common/enums";
+import {
+  addUser,
+  checkUidExist,
+  checkUsernameExist,
+} from "../../services/database";
+import { AddUserInput, GoogleUserData } from "../../common/types";
+import { useAppDispatch } from "../../hooks/hooks";
+import { setUserIsAuthenticated } from "../../store/slices/userSlice";
 
 export type SignInFormProps = {
   setAuthenticating: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,6 +25,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     sessionStorage.getItem("error")
   );
   const [userType, setUserType] = useState<UserType>(UserType.EXISTING);
+  const dispatch = useAppDispatch();
 
   const updateUsername = () => {
     const signInInputValue = (
@@ -21,11 +34,74 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
     setUsername(signInInputValue.trim().toLowerCase());
   };
 
-  const signInUser = async () => {
+  const userAlreadyExist = () => {
+    sessionStorage.setItem(
+      "error",
+      "User already exist. Please sign in as existing user."
+    );
+    signOutUser();
+  };
+
+  const usernameAlreadyTaken = () => {
+    sessionStorage.setItem(
+      "error",
+      "Username already taken. Please try different username."
+    );
+    signOutUser();
+  };
+
+  const userNotExist = () => {
+    sessionStorage.setItem(
+      "error",
+      "User does not exist. Please sign up as new user."
+    );
+    signOutUser();
+  };
+
+  const signUpUser = async (
+    isUidExist: boolean,
+    googleUserData: GoogleUserData
+  ) => {
+    if (isUidExist) {
+      userAlreadyExist();
+    } else {
+      const isUsernameExist = await checkUsernameExist(username);
+      if (isUsernameExist) {
+        usernameAlreadyTaken();
+      } else {
+        const addUserInput: AddUserInput = {
+          uid: googleUserData.uid,
+          userData: {
+            username: username,
+            name: googleUserData.name,
+            photoUrl: googleUserData.photoUrl,
+          },
+        };
+        await addUser(addUserInput);
+        dispatch(setUserIsAuthenticated(true));
+      }
+    }
+  };
+
+  const signInUser = (isUidExist: boolean) => {
+    if (isUidExist) {
+      dispatch(setUserIsAuthenticated(true));
+    } else {
+      userNotExist();
+    }
+  };
+
+  const authenticateUser = async () => {
     setAuthenticating(true);
-    sessionStorage.setItem("userType", userType.toString());
-    sessionStorage.setItem("username", username);
     await signIn();
+    const googleUserData: GoogleUserData = getAuthenticatedGoogleUserData();
+    const isUidExist = await checkUidExist(googleUserData.uid);
+    if (userType === UserType.NEW) {
+      await signUpUser(isUidExist, googleUserData);
+    } else {
+      signInUser(isUidExist);
+    }
+    sessionStorage.setItem("username", username);
     setAuthenticating(false);
   };
 
@@ -114,8 +190,10 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
   };
 
   const getButtonLabel = () => {
-    return userType === UserType.NEW ? "Sign up with Google" : "Sign in with Google";
-  }
+    return userType === UserType.NEW
+      ? "Sign up with Google"
+      : "Sign in with Google";
+  };
 
   return (
     <div className="sign-in-form">
@@ -137,7 +215,7 @@ export default function SignInForm({ setAuthenticating }: SignInFormProps) {
       {showUsernameInputField()}
       <button
         className={`${getDisabledButtonStyle()} primary label-large on-primary-text`}
-        onClick={() => signInUser()}
+        onClick={() => authenticateUser()}
         disabled={disableButtonCondition}
         id="signInButton"
       >

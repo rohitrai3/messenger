@@ -6,6 +6,7 @@ export interface UserState {
   username: string;
   name: string;
   photoUrl: string;
+  isAuthenticated: boolean;
 }
 
 const initialState: UserState = {
@@ -13,6 +14,7 @@ const initialState: UserState = {
   username: "",
   name: "",
   photoUrl: "",
+  isAuthenticated: false,
 };
 
 export const userSlice = createSlice({
@@ -31,13 +33,23 @@ export const userSlice = createSlice({
     setUserPhotoUrl: (state, action: PayloadAction<string>) => {
       state.photoUrl = action.payload;
     },
+    setUserIsAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
   },
 });
 
-export const { setUserUid, setUserUsername, setUserName, setUserPhotoUrl } =
-  userSlice.actions;
+export const {
+  setUserUid,
+  setUserUsername,
+  setUserName,
+  setUserPhotoUrl,
+  setUserIsAuthenticated,
+} = userSlice.actions;
 export const selectUserUid = (state: RootState) => state.user.uid;
 export const selectUserUsername = (state: RootState) => state.user.username;
 export const selectUserName = (state: RootState) => state.user.name;
 export const selectUserPhotoUrl = (state: RootState) => state.user.photoUrl;
+export const selectUserIsAuthenticated = (state: RootState) =>
+  state.user.isAuthenticated;
 export default userSlice.reducer;
