@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { UserData } from "../../common/types";
+import { AcceptConnectionRequestInput, UserData } from "../../common/types";
 import {
-  getConnectionRequestsOnUpdate,
-  addContact,
-  removeConnectionRequest,
+  acceptConnectionRequest,
+  getConnectionRequests,
 } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { SpinnerIcon, TickIcon } from "../../common/icons";
 
 export default function ConnectionRequests() {
-  const [connectionRequests, setConnectionRequests] = useState<UserData[]>([]);
+  const [connectionRequests, setConnectionRequests] = useState<
+    Map<string, UserData>
+  >(new Map());
   const [loadingConnectionRequests, setLoadingConnectionRequests] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const userUsername = useAppSelector((state) => state.user.username);
   const [acceptingConnectionRequest, setAcceptingConnectionRequest] =
     useState<boolean>(false);
@@ -20,45 +21,60 @@ export default function ConnectionRequests() {
 
   const loadConnectionRequests = async () => {
     setLoadingConnectionRequests(true);
-    await getConnectionRequestsOnUpdate(userUsername, setConnectionRequests);
+    const requestIdToUserData = await getConnectionRequests(userUsername);
+    setConnectionRequests(requestIdToUserData);
     setLoadingConnectionRequests(false);
   };
 
-  const acceptConnectionRequest = async (username: string) => {
+  const acceptSelectedConnectionRequest = async (
+    requestId: string,
+    username: string
+  ) => {
     setAcceptingConnectionRequest(true);
-    await addContact(userUsername, username);
-    await addContact(username, userUsername);
-    await removeConnectionRequest(userUsername, username);
+    const acceptConnectionRequestInput: AcceptConnectionRequestInput = {
+      user: userUsername,
+      connection: username,
+      connectionRequestKey: requestId,
+    };
+    console.log("requestId: ", requestId);
+    await acceptConnectionRequest(acceptConnectionRequestInput);
     await loadConnectionRequests();
     setAcceptingConnectionRequest(false);
   };
 
-  const acceptConnectionRequestButton = (username: string) => {
+  const acceptConnectionRequestButton = (
+    requestId: string,
+    username: string
+  ) => {
     return (
       <div
         className="secondary-action-icon secondary"
-        onClick={() => acceptConnectionRequest(username)}
+        onClick={() => acceptSelectedConnectionRequest(requestId, username)}
       >
         {TickIcon}
       </div>
     );
   };
 
-  const getSendConnectionRequestButton = (username: string) => {
+  const getSendConnectionRequestButton = (
+    requestId: string,
+    username: string
+  ) => {
     return acceptingConnectionRequest
       ? SpinnerIcon
-      : acceptConnectionRequestButton(username);
+      : acceptConnectionRequestButton(requestId, username);
   };
 
   const showContactUserInfo = (
+    requestId: string,
     username: string,
     name: string,
     photoUrl: string
   ) => {
     return (
-      <div key={username} className="contact-list-item">
+      <div key={requestId} className="contact-list-item">
         <div
-          key={username}
+          key={requestId}
           className="contact-user-info on-primary-container-text"
         >
           <img src={photoUrl} />
@@ -66,7 +82,7 @@ export default function ConnectionRequests() {
             <div className="headline-small">{name}</div>
             <div className="label-medium">@{username}</div>
           </div>
-          {getSendConnectionRequestButton(username)}
+          {getSendConnectionRequestButton(requestId, username)}
         </div>
       </div>
     );
@@ -78,13 +94,14 @@ export default function ConnectionRequests() {
     } else {
       return (
         <div className="connection-request-list">
-          {connectionRequests?.map((connectionRequest) => {
-            return showContactUserInfo(
-              connectionRequest.username,
-              connectionRequest.name,
-              connectionRequest.photoUrl
-            );
-          })}
+          {Array.from(connectionRequests).map(([requestId, userData]) =>
+            showContactUserInfo(
+              requestId,
+              userData.username,
+              userData.name,
+              userData.photoUrl
+            )
+          )}
         </div>
       );
     }
@@ -92,7 +109,7 @@ export default function ConnectionRequests() {
 
   const updateConnectionRequestsCount = () => {
     if (connectionRequests) {
-      setConnectionRequestsCount(connectionRequests.length);
+      setConnectionRequestsCount(connectionRequests.size);
     } else {
       setConnectionRequestsCount(0);
     }

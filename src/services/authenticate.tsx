@@ -22,15 +22,15 @@ export const signIn = async () => {
 };
 
 export const checkAuthentication = (
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsUserAuthenticated: React.Dispatch<React.SetStateAction<boolean>>
+  setIsUserSignedIn: React.Dispatch<React.SetStateAction<boolean>>,
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      setIsUserAuthenticated(true);
+      setIsUserSignedIn(true);
     } else {
       console.log("User is signed out");
-      setIsUserAuthenticated(false);
+      setIsUserSignedIn(false);
     }
     setLoading(false);
   });
