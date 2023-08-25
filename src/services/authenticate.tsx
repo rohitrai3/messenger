@@ -13,8 +13,8 @@ const auth = getAuth(app);
 
 export const signIn = async () => {
   await signInWithPopup(auth, provider)
-    .then((response) => {
-      console.log("User sign in successful: ", response.user.uid);
+    .then(() => {
+      console.log("User sign in successful: ");
     })
     .catch((error) => {
       console.log("Authentication error: ", error);

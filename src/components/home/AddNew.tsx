@@ -5,7 +5,7 @@ import {
   getConnections,
   getUser,
 } from "../../services/database";
-import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/icons";
+import { SearchIcon, SpinnerIcon, TickIcon } from "../../common/graphics";
 import { useAppSelector } from "../../hooks/hooks";
 import ConnectionRequests from "./ConnectionRequests";
 
@@ -61,7 +61,7 @@ export default function AddNew() {
         className="secondary-action-icon secondary"
         onClick={() => sendConnectionRequest()}
       >
-        {TickIcon}
+        {TickIcon()}
       </div>
     );
   };

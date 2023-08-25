@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ContactTab } from "../../common/enums";
-import { TickIcon } from "../../common/icons";
+import { TickIcon } from "../../common/graphics";
 import AddNew from "./AddNew";
 import MyContacts, { MyContactsProps } from "./MyContacts";
 
@@ -15,7 +15,7 @@ export default function Contacts({ initializingUserState }: ContactsProps) {
 
   const getSelectionIcon = (tab: ContactTab) => {
     if (tab === selectedTab) {
-      return TickIcon;
+      return TickIcon();
     }
   };
 

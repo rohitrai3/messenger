@@ -198,7 +198,6 @@ export const getMessages = async (sender: string, receiver: string) => {
 };
 
 export const checkUidExist = async (uid: string) => {
-  console.log("checking uid exist...");
   var isUidExist = false;
 
   await fetch(`${baseUrl}user/check-uid-exist/${uid}`, {
@@ -212,13 +211,11 @@ export const checkUidExist = async (uid: string) => {
     .catch((error) => {
       console.log("error: ", error);
     });
-  console.log("...done uid checking");
 
   return isUidExist;
 };
 
 export const checkUsernameExist = async (username: string) => {
-  console.log("checking username exist...");
   var isUsernameExist = false;
 
   await fetch(`${baseUrl}user/check-username-exist/${username}`, {
@@ -234,7 +231,6 @@ export const checkUsernameExist = async (username: string) => {
     .catch((error) => {
       console.log("error: ", error);
     });
-  console.log("...done username checking");
 
   return isUsernameExist;
 };

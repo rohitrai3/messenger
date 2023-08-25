@@ -5,7 +5,7 @@ import {
   getConnectionRequests,
 } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
-import { SpinnerIcon, TickIcon } from "../../common/icons";
+import { SpinnerIcon, TickIcon } from "../../common/graphics";
 
 export default function ConnectionRequests() {
   const [connectionRequests, setConnectionRequests] = useState<
@@ -36,7 +36,6 @@ export default function ConnectionRequests() {
       connection: username,
       connectionRequestKey: requestId,
     };
-    console.log("requestId: ", requestId);
     await acceptConnectionRequest(acceptConnectionRequestInput);
     await loadConnectionRequests();
     setAcceptingConnectionRequest(false);
@@ -51,7 +50,7 @@ export default function ConnectionRequests() {
         className="secondary-action-icon secondary"
         onClick={() => acceptSelectedConnectionRequest(requestId, username)}
       >
-        {TickIcon}
+        {TickIcon()}
       </div>
     );
   };

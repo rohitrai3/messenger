@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UserData } from "../../common/types";
 import { getConnections } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
-import { NextIcon, SpinnerIcon } from "../../common/icons";
+import { NextIcon, SpinnerIcon } from "../../common/graphics";
 import { useNavigate } from "react-router-dom";
 
 export type MyContactsProps = {

@@ -19,7 +19,6 @@ export default function Home() {
   const dispatch = useAppDispatch();
 
   const initializeUserState = async () => {
-    console.log("Initializing user stata...");
     setInitializingUserState(true);
     const googleUserData: GoogleUserData = getAuthenticatedGoogleUserData();
     const username = await getUsername(googleUserData.uid);
@@ -29,7 +28,6 @@ export default function Home() {
     dispatch(setUserName(userData.name));
     dispatch(setUserPhotoUrl(userData.photoUrl));
     sessionStorage.clear();
-    console.log("...done initializing");
     setInitializingUserState(false);
   };
 

@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { BeforeIcon, SendIcon, SpinnerIcon } from "../../common/icons";
+import { BeforeIcon, SendIcon, SpinnerIcon } from "../../common/graphics";
 import { useState } from "react";
 import { addMessage } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";

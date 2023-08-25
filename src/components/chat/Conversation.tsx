@@ -3,7 +3,7 @@ import { MessageData } from "../../common/types";
 import { getMessages, getUser, getUsername } from "../../services/database";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { useLocation } from "react-router-dom";
-import { SpinnerIcon } from "../../common/icons";
+import { SpinnerIcon } from "../../common/graphics";
 import { getAuthenticatedGoogleUserData } from "../../services/authenticate";
 import {
   setUserName,
