@@ -11,13 +11,13 @@ export default function HomeHeader({ initializingUserState }: HomeHeaderProps) {
 
   const getLoadingStyle = () => {
     if (initializingUserState) {
-      return "surface-dim";
+      return "animate-pulse";
     }
   };
 
   const showUserPorfilePhoto = () => {
     if (!initializingUserState) {
-      return <img src={userPhotoUrl} />;
+      return <img className="w-full h-full object-cover" src={userPhotoUrl} />;
     }
   };
 
@@ -28,22 +28,16 @@ export default function HomeHeader({ initializingUserState }: HomeHeaderProps) {
   };
 
   return (
-    <div className="home-header">
-      <div className="home-header-heading display-small on-background-text">
-        Hello!
+    <div className="flex items-center mb-5">
+      <div
+        className={`${getLoadingStyle()} w-30 h-30 rounded-full overflow-hidden bg-on-background-loading-light dark:bg-on-background-loading-dark mr-2`}
+      >
+        {showUserPorfilePhoto()}
       </div>
-      <div className={`home-user-info ${getLoadingStyle()}`}>
-        <div className={`user-info`}>
-          <div className="user-profile-photo">{showUserPorfilePhoto()}</div>
-          <div className="user-name">
-            <div className="display-medium on-background-text">{userName}</div>
-            <div className="label-large on-background-text">
-              {showUserUsername()}
-            </div>
-          </div>
-        </div>
+      <div>
+        <div className="text-display-small">{userName}</div>
+        <div className="text-label-large">{showUserUsername()}</div>
       </div>
-      <div className="home-horizontal-line" />
     </div>
   );
 }

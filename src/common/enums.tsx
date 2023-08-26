@@ -1,6 +1,6 @@
-export enum ContactTab {
-  MY_CONTACTS,
-  ADD_NEW,
+export enum ConnectionsTab {
+  CONNECTIONS,
+  ADD_CONNECTIONS,
 }
 
 export enum FeedbackAction {
