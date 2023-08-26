@@ -58,10 +58,10 @@ export default function AddNew() {
   const sendConnectionRequestButton = () => {
     return (
       <div
-        className="secondary-action-icon secondary"
+        className="bg-secondary-light dark:bg-secondary-dark rounded-full p-3"
         onClick={() => sendConnectionRequest()}
       >
-        {TickIcon()}
+        {TickIcon("fill-on-secondary-light dark:fill-on-secondary-dark")}
       </div>
     );
   };
@@ -80,14 +80,13 @@ export default function AddNew() {
     photoUrl: string
   ) => {
     return (
-      <div
-        key={username}
-        className="contact-user-info on-primary-container-text"
-      >
-        <img src={photoUrl} />
-        <div className="contact-user-name">
-          <div className="headline-small">{name}</div>
-          <div className="label-medium">@{username}</div>
+      <div key={username} className="flex items-center px-4 mt-2">
+        <div className="w-15 h-15 rounded-full overflow-hidden bg-on-background-loading-light dark:bg-on-background-loading-dark mr-2">
+          <img className="w-full h-full object-cover" src={photoUrl} />
+        </div>
+        <div className="flex-1">
+          <div className="text-title-medium">{name}</div>
+          <div className="text-label-medium">@{username}</div>
         </div>
         {getSendConnectionRequestButton()}
       </div>
@@ -97,7 +96,7 @@ export default function AddNew() {
   const getSearchedContact = () => {
     if (searchedUser) {
       return (
-        <div className="searched-contact">
+        <div>
           {showContactUserInfo(
             searchedUser.username,
             searchedUser.name,
@@ -110,8 +109,11 @@ export default function AddNew() {
 
   const searchButton = () => {
     return (
-      <div className="primary-action-icon primary" onClick={() => searchUser()}>
-        {SearchIcon}
+      <div
+        className="w-fit h-fit bg-primary-light dark:bg-primary-dark rounded-full p-3 ml-5"
+        onClick={() => searchUser()}
+      >
+        {SearchIcon("fill-on-primary-light dark:fill-on-primary-dark")}
       </div>
     );
   };
@@ -121,12 +123,12 @@ export default function AddNew() {
   };
 
   return (
-    <div className="add-new">
-      <div className="search-contact">
+    <div className="flex-1 flex flex-col overflow-auto">
+      <div className="flex justify-between">
         <input
-          className="body-large on-secondary-container-text secondary-container"
+          className="w-[261px] bg-primary-container-light dark:bg-primary-container-dark text-body-large text-on-primary-container-light dark:text-on-primary-container-dark px-6 py-2 border-2 border-outline-light dark:border-outline-dark rounded-full"
           type="text"
-          placeholder="Enter username"
+          placeholder="Enter username..."
           value={searchUsername}
           onChange={() => updateUsername()}
           id="searchUserInput"

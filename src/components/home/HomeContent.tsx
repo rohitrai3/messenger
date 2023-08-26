@@ -43,7 +43,7 @@ export default function HomeContent({
   };
 
   return (
-    <div className="flex flex-col items-center flex-1 overflow-auto">
+    <div className="flex flex-col items-center flex-1 mb-5 overflow-auto">
       <div className="w-[361px] flex mb-4">
         <div
           className={`${getTabStyle(

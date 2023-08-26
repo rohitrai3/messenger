@@ -47,10 +47,10 @@ export default function ConnectionRequests() {
   ) => {
     return (
       <div
-        className="secondary-action-icon secondary"
+        className="bg-secondary-light dark:bg-secondary-dark p-3 rounded-full"
         onClick={() => acceptSelectedConnectionRequest(requestId, username)}
       >
-        {TickIcon()}
+        {TickIcon("fill-on-secondary-light dark:fill-on-secondary-dark")}
       </div>
     );
   };
@@ -71,18 +71,15 @@ export default function ConnectionRequests() {
     photoUrl: string
   ) => {
     return (
-      <div key={requestId} className="contact-list-item">
-        <div
-          key={requestId}
-          className="contact-user-info on-primary-container-text"
-        >
-          <img src={photoUrl} />
-          <div className="contact-user-name">
-            <div className="headline-small">{name}</div>
-            <div className="label-medium">@{username}</div>
-          </div>
-          {getSendConnectionRequestButton(requestId, username)}
+      <div key={requestId} className="flex items-center">
+        <div className="w-15 h-15 bg-on-background-loading-light dark:bg-on-background-loading-dark rounded-full overflow-hidden mr-2">
+          <img className="w-full h-full object-cover" src={photoUrl} />
         </div>
+        <div className="flex-1">
+          <div className="text-title-medium">{name}</div>
+          <div className="text-label-medium">@{username}</div>
+        </div>
+        {getSendConnectionRequestButton(requestId, username)}
       </div>
     );
   };
@@ -92,7 +89,7 @@ export default function ConnectionRequests() {
       return SpinnerIcon;
     } else {
       return (
-        <div className="connection-request-list">
+        <div className="mx-4 my-2 flex flex-col space-y-4">
           {Array.from(connectionRequests).map(([requestId, userData]) =>
             showContactUserInfo(
               requestId,
@@ -123,8 +120,8 @@ export default function ConnectionRequests() {
   }, [connectionRequests]);
 
   return (
-    <div className="connection-requests">
-      <div className="connection-requests-heading title-small on-surface-variant-text">
+    <div className="mt-4 overflow-auto">
+      <div className="border-t-2 border-outline-variant-light dark:border-outline-variant-dark text-label-small pl-1">
         Incoming connection requests ({connectionRequestsCount})
       </div>
       {getConnectionRequestsList()}

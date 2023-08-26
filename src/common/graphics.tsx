@@ -162,8 +162,9 @@ export const NextIcon = (
   </svg>
 );
 
-export const SearchIcon = (
+export const SearchIcon = (style?: string) => (
   <svg
+    className={style}
     xmlns="http://www.w3.org/2000/svg"
     height="24px"
     viewBox="0 0 24 24"

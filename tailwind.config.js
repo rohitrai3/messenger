@@ -45,6 +45,10 @@ export default {
           lineHeight: '2.75rem',
           fontWeight: '400',
         }],
+        'headline-small': ['1.5rem', {
+          lineHeight: '2rem',
+          fontWeight: '400',
+        }],
         'title-medium': ['1rem', {
           lineHeight: '1.5rem',
           fontWeight: '500',
@@ -60,6 +64,14 @@ export default {
         'label-medium': ['0.75rem', {
           lineHeight: '1rem',
           fontWeight: '500',
+        }],
+        'label-small': ['0.688rem', {
+          lineHeight: '1rem',
+          fontWeight: '500',
+        }],
+        'body-large': ['1rem', {
+          lineHeight: '1.5rem',
+          fontWeight: '400',
         }],
       },
       height: {

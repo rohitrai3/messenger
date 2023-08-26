@@ -58,7 +58,7 @@ export default function Connections({
       return SpinnerIcon;
     } else {
       return (
-        <div className="w-[345px] grid grid-cols-2 gap-y-4 overflow-auto mb-5">
+        <div className="w-[345px] grid grid-cols-2 gap-y-4 overflow-auto">
           {connectedUsersData.map((connectedUserData) => {
             return showContactUserInfo(
               connectedUserData.username,
