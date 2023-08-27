@@ -1,5 +1,6 @@
-export const BeforeIcon = (
+export const BeforeIcon = (style?: string) => (
   <svg
+    className={style}
     xmlns="http://www.w3.org/2000/svg"
     height="24px"
     viewBox="0 0 24 24"
@@ -176,8 +177,9 @@ export const SearchIcon = (style?: string) => (
   </svg>
 );
 
-export const SendIcon = (
+export const SendIcon = (style?: string) => (
   <svg
+    className={style}
     xmlns="http://www.w3.org/2000/svg"
     height="24px"
     viewBox="0 0 24 24"

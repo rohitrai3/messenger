@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UserData } from "../../common/types";
 import { getUser } from "../../services/database";
+import { BeforeIcon } from "../../common/graphics";
 
 export default function ChatHeader() {
   const location = useLocation();
+  const navigate = useNavigate();
   const contactUsername = location.state.username;
   const [contactUserData, setConnectUserData] = useState<UserData>();
   const [loadingUser, setLoadingUser] = useState<boolean>(true);
@@ -18,13 +20,18 @@ export default function ChatHeader() {
 
   const getLoadingStyle = () => {
     if (loadingUser) {
-      return "surface-dim";
+      return "animate-pulse";
     }
   };
 
   const showContactProfilePhoto = () => {
     if (!loadingUser) {
-      return <img src={contactUserData?.photoUrl} />;
+      return (
+        <img
+          className="w-full h-full object-cover"
+          src={contactUserData?.photoUrl}
+        />
+      );
     }
   };
 
@@ -36,11 +43,15 @@ export default function ChatHeader() {
 
   const getContactUserInfo = () => {
     return (
-      <div className="contact-user-info">
-        {showContactProfilePhoto()}
-        <div className="contact-user-name">
-          <div className="headline-large">{contactUserData?.name}</div>
-          <div className="label-large">{showContactUsername()}</div>
+      <div className="flex items-center">
+        <div
+          className={`${getLoadingStyle()} w-15 h-15 bg-on-background-loading-light dark:bg-on-background-loading-dark rounded-full overflow-hidden mr-2`}
+        >
+          {showContactProfilePhoto()}
+        </div>
+        <div>
+          <div className="text-title-medium">{contactUserData?.name}</div>
+          <div className="text-label-medium">{showContactUsername()}</div>
         </div>
       </div>
     );
@@ -51,11 +62,14 @@ export default function ChatHeader() {
   }, []);
 
   return (
-    <div className="chat-header on-background-text">
-      <div className="chat-heading headline-medium">You are talking to</div>
-      <div className={`chat-user-info ${getLoadingStyle()}`}>
-        {getContactUserInfo()}
+    <div className="flex items-center">
+      <div
+        className="w-fit h-fit bg-secondary-light dark:bg-secondary-dark p-3 rounded-full mr-5"
+        onClick={() => navigate(-1)}
+      >
+        {BeforeIcon("fill-on-secondary-light dark:fill-on-secondary-dark")}
       </div>
+      {getContactUserInfo()}
     </div>
   );
 }

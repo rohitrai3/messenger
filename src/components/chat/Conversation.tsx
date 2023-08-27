@@ -23,25 +23,32 @@ export default function Conversation() {
   const loadMessages = async () => {
     setLoadingMessages(true);
     const messageDataList = await getMessages(userUsername, contactUsername);
-    setMessages(messageDataList);
+    setMessages(
+      messageDataList.sort((message1, message2) =>
+        message1.timestamp < message2.timestamp ? -1 : 1
+      )
+    );
     setLoadingMessages(false);
   };
 
-  const getUserMessageView = (messageText: string, timestamp: number) => {
+  const showSenderMessage = (messageText: string, timestamp: number) => {
     return (
-      <div className="message-right body-large on-primary-text" key={timestamp}>
-        <div className="message-user primary">{messageText}</div>
+      <div
+        key={timestamp}
+        className="max-w-[80%] w-fit bg-primary-container-light dark:bg-primary-container-dark text-on-primary-container-light dark:text-on-primary-container-dark text-body-large rounded-l-3xl px-6 py-2 self-end break-all"
+      >
+        {messageText}
       </div>
     );
   };
 
-  const getContactMessageView = (messageText: string, timestamp: number) => {
+  const showReceiverMessage = (messageText: string, timestamp: number) => {
     return (
       <div
-        className="message-left body-large on-secondary-text"
         key={timestamp}
+        className="max-w[80%] w-fit bg-secondary-container-light dark:bg-secondary-container-dark text-on-secondary-container-light dark:text-on-secondary-container-dark text-body-large rounded-r-3xl px-6 py-2 self-start break-all"
       >
-        <div className="message-contact secondary">{messageText}</div>
+        {messageText}
       </div>
     );
   };
@@ -51,12 +58,12 @@ export default function Conversation() {
       return SpinnerIcon;
     } else {
       return (
-        <div className="messages">
+        <div className="w-d-screen -ml-4 my-5 space-y-2 flex-1 flex flex-col-reverse overflow-auto">
           {messages?.map((message) => {
             if (message.sender === userUsername) {
-              return getUserMessageView(message.message, message.timestamp);
+              return showSenderMessage(message.message, message.timestamp);
             } else {
-              return getContactMessageView(message.message, message.timestamp);
+              return showReceiverMessage(message.message, message.timestamp);
             }
           })}
         </div>
@@ -82,12 +89,5 @@ export default function Conversation() {
     loadMessages();
   }, [userUsername]);
 
-  return (
-    <div className="conversation">
-      <div className="conversation-heading title-small on-surface-variant-text">
-        Messages
-      </div>
-      {getMessageList()}
-    </div>
-  );
+  return getMessageList();
 }
