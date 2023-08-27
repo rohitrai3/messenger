@@ -10,11 +10,12 @@ import {
 } from "../../store/slices/userSlice";
 import HomeHeader, { HomeHeaderProps } from "./HomeHeader";
 import HomeFooter from "./HomeFooter";
-import { GoogleUserData } from "../../common/types";
+import { GoogleUserData, UserData } from "../../common/types";
 import { Theme } from "../../common/enums";
 import { DarkModeButton, LightModeButton } from "../../common/buttons";
 import { selectAppTheme } from "../../store/slices/appSlice";
 import HomeContent, { HomeContentProps } from "./HomeContent";
+import Chat, { ChatProps } from "../chat";
 
 export default function Home() {
   const [initializingUserState, setInitializingUserState] =
@@ -23,6 +24,13 @@ export default function Home() {
   const theme = useAppSelector(selectAppTheme);
   const homeHeaderProps: HomeHeaderProps = {
     initializingUserState: initializingUserState,
+  };
+  const [selectedConnection, setSelectedConnection] = useState<UserData | null>(
+    null
+  );
+  const chatProps: ChatProps = {
+    connection: selectedConnection,
+    setSelectedConnection: setSelectedConnection,
   };
 
   const initializeUserState = async () => {
@@ -40,10 +48,23 @@ export default function Home() {
 
   const homeContentProps: HomeContentProps = {
     initializingUserState: initializingUserState,
+    setSelectedConnection: setSelectedConnection,
   };
 
   const getThemeButton = () => {
     return theme === Theme.LIGHT ? <LightModeButton /> : <DarkModeButton />;
+  };
+
+  const showMainWindowWithChatOnLargeScreen = () => {
+    if (selectedConnection) {
+      return "hidden lg:flex";
+    }
+  };
+
+  const hideEmptyChatWindow = () => {
+    if (!selectedConnection) {
+      return "hidden";
+    }
   };
 
   useEffect(() => {
@@ -51,11 +72,18 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-d-screen h-d-screen p-4 flex flex-col">
-      {getThemeButton()}
-      <HomeHeader {...homeHeaderProps} />
-      <HomeContent {...homeContentProps} />
-      <HomeFooter />
+    <div className="w-d-screen h-d-screen flex">
+      <div
+        className={`${showMainWindowWithChatOnLargeScreen()} w-full min-w-fit lg:w-fit h-full p-4 lg:pr-0 flex flex-col`}
+      >
+        {getThemeButton()}
+        <HomeHeader {...homeHeaderProps} />
+        <HomeContent {...homeContentProps} />
+        <HomeFooter />
+      </div>
+      <div className={`${hideEmptyChatWindow()} flex-1 h-full lg:block`}>
+        <Chat {...chatProps} />
+      </div>
     </div>
   );
 }

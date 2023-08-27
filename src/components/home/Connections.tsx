@@ -3,19 +3,19 @@ import { UserData } from "../../common/types";
 import { getConnections } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { SpinnerIcon } from "../../common/graphics";
-import { useNavigate } from "react-router-dom";
 
 export type ConnectionsProps = {
   initializingUserState: boolean;
+  setSelectedConnection: React.Dispatch<React.SetStateAction<UserData | null>>;
 };
 
 export default function Connections({
   initializingUserState,
+  setSelectedConnection,
 }: ConnectionsProps) {
   const [connectedUsersData, setConnectedUsersData] = useState<UserData[]>([]);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
   const userUsername = useAppSelector((state) => state.user.username);
-  const navigate = useNavigate();
 
   const loadConnectedUsersData = async () => {
     setLoadingUsers(true);
@@ -24,30 +24,21 @@ export default function Connections({
     setLoadingUsers(false);
   };
 
-  const showContactUserInfo = (
-    username: string,
-    name: string,
-    photoUrl: string
-  ) => {
+  const showContactUserInfo = (user: UserData) => {
     return (
       <div
-        key={username}
+        key={user.username}
         className="w-fit flex items-center hover:cursor-pointer"
-        onClick={() =>
-          navigate("/chat", {
-            state: {
-              username: username,
-              init: initializingUserState,
-            },
-          })
-        }
+        onClick={() => {
+          setSelectedConnection(user);
+        }}
       >
         <div className="w-15 h-15 rounded-full overflow-hidden bg-on-background-loading-light dark:bg-on-background-loading-dark mr-2">
-          <img className="w-full h-full object-cover" src={photoUrl} />
+          <img className="w-full h-full object-cover" src={user.photoUrl} />
         </div>
         <div>
-          <div className="text-title-medium">{name}</div>
-          <div className="text-label-medium">@{username}</div>
+          <div className="text-title-medium">{user.name}</div>
+          <div className="text-label-medium">@{user.username}</div>
         </div>
       </div>
     );
@@ -60,11 +51,7 @@ export default function Connections({
       return (
         <div className="w-[345px] grid grid-cols-2 gap-y-4 overflow-auto">
           {connectedUsersData.map((connectedUserData) => {
-            return showContactUserInfo(
-              connectedUserData.username,
-              connectedUserData.name,
-              connectedUserData.photoUrl
-            );
+            return showContactUserInfo(connectedUserData);
           })}
         </div>
       );

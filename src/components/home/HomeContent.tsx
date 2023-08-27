@@ -3,13 +3,16 @@ import { ConnectionsTab } from "../../common/enums";
 import { TickIcon } from "../../common/graphics";
 import AddNew from "./AddNew";
 import Connections, { ConnectionsProps } from "./Connections";
+import { UserData } from "../../common/types";
 
 export type HomeContentProps = {
   initializingUserState: boolean;
+  setSelectedConnection: React.Dispatch<React.SetStateAction<UserData | null>>;
 };
 
 export default function HomeContent({
   initializingUserState,
+  setSelectedConnection,
 }: HomeContentProps) {
   const [activeTab, setActiveTab] = useState<ConnectionsTab>(
     ConnectionsTab.CONNECTIONS
@@ -20,6 +23,7 @@ export default function HomeContent({
     "bg-surface-light dark:bg-surface-dark text-on-surface-light dark:text-on-surface-dark";
   const connectionsProps: ConnectionsProps = {
     initializingUserState: initializingUserState,
+    setSelectedConnection: setSelectedConnection,
   };
 
   const getTabStyle = (tab: ConnectionsTab) => {
