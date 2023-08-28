@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { getAuthenticatedGoogleUserData } from "../../services/authenticate";
 import { getUser, getUsername } from "../../services/database";
 import {
@@ -9,17 +9,31 @@ import {
   setUserUsername,
 } from "../../store/slices/userSlice";
 import HomeHeader, { HomeHeaderProps } from "./HomeHeader";
-import Contacts, { ContactsProps } from "./Contacts";
 import HomeFooter from "./HomeFooter";
-import { GoogleUserData } from "../../common/types";
+import { GoogleUserData, UserData } from "../../common/types";
+import { Theme } from "../../common/enums";
+import { DarkModeButton, LightModeButton } from "../../common/buttons";
+import { selectAppTheme } from "../../store/slices/appSlice";
+import HomeContent, { HomeContentProps } from "./HomeContent";
+import Chat, { ChatProps } from "../chat";
 
 export default function Home() {
   const [initializingUserState, setInitializingUserState] =
     useState<boolean>(true);
   const dispatch = useAppDispatch();
+  const theme = useAppSelector(selectAppTheme);
+  const homeHeaderProps: HomeHeaderProps = {
+    initializingUserState: initializingUserState,
+  };
+  const [selectedConnection, setSelectedConnection] = useState<UserData | null>(
+    null
+  );
+  const chatProps: ChatProps = {
+    connection: selectedConnection,
+    setSelectedConnection: setSelectedConnection,
+  };
 
   const initializeUserState = async () => {
-    console.log("Initializing user stata...");
     setInitializingUserState(true);
     const googleUserData: GoogleUserData = getAuthenticatedGoogleUserData();
     const username = await getUsername(googleUserData.uid);
@@ -29,16 +43,28 @@ export default function Home() {
     dispatch(setUserName(userData.name));
     dispatch(setUserPhotoUrl(userData.photoUrl));
     sessionStorage.clear();
-    console.log("...done initializing");
     setInitializingUserState(false);
   };
 
-  const homeHeaderProps: HomeHeaderProps = {
+  const homeContentProps: HomeContentProps = {
     initializingUserState: initializingUserState,
+    setSelectedConnection: setSelectedConnection,
   };
 
-  const contactsProps: ContactsProps = {
-    initializingUserState: initializingUserState,
+  const getThemeButton = () => {
+    return theme === Theme.LIGHT ? <LightModeButton /> : <DarkModeButton />;
+  };
+
+  const showMainWindowWithChatOnLargeScreen = () => {
+    if (selectedConnection) {
+      return "hidden lg:flex";
+    }
+  };
+
+  const hideEmptyChatWindow = () => {
+    if (!selectedConnection) {
+      return "hidden";
+    }
   };
 
   useEffect(() => {
@@ -46,10 +72,18 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home background">
-      <HomeHeader {...homeHeaderProps} />
-      <Contacts {...contactsProps} />
-      <HomeFooter />
+    <div className="w-d-screen h-d-screen flex">
+      <div
+        className={`${showMainWindowWithChatOnLargeScreen()} w-full min-w-fit lg:w-fit h-full p-4 lg:pr-0 flex flex-col`}
+      >
+        {getThemeButton()}
+        <HomeHeader {...homeHeaderProps} />
+        <HomeContent {...homeContentProps} />
+        <HomeFooter />
+      </div>
+      <div className={`${hideEmptyChatWindow()} flex-1 h-full lg:block`}>
+        <Chat {...chatProps} />
+      </div>
     </div>
   );
 }

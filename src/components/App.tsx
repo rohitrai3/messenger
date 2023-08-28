@@ -1,16 +1,20 @@
+import "../styles/style.css";
+import "../styles/typography.css";
 import { RouterProvider } from "react-router-dom";
 import { authenticatedRouter, router } from "../router/router";
-import "../styles/theme.css";
 import { useEffect, useState } from "react";
 import { checkAuthentication } from "../services/authenticate";
-import { SpinnerIcon } from "../common/icons";
+import { SpinnerIcon } from "../common/graphics";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
-import { setUserIsAuthenticated } from "../store/slices/userSlice";
+import {
+  selectUserIsAuthenticated,
+  setUserIsAuthenticated,
+} from "../store/slices/userSlice";
+import { setAppTheme } from "../store/slices/appSlice";
+import { Theme } from "../common/enums";
 
 function App() {
-  const isUserAuthenticated = useAppSelector(
-    (state) => state.user.isAuthenticated
-  );
+  const isUserAuthenticated = useAppSelector(selectUserIsAuthenticated);
   const [loading, setLoading] = useState<boolean>(true);
   const [isUserSignedIn, setIsUserSignedIn] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -32,9 +36,36 @@ function App() {
     }
   };
 
+  const setThemeFromLocalOrSystem = () => {
+    if (
+      localStorage.getItem("theme") === Theme.DARK ||
+      (!("theme" in localStorage) &&
+        window.matchMedia(`(prefers-color-scheme: ${Theme.DARK}`).matches)
+    ) {
+      document.documentElement.classList.add(Theme.DARK);
+      dispatch(setAppTheme(Theme.DARK));
+    } else {
+      document.documentElement.classList.remove(Theme.DARK);
+      localStorage.setItem("theme", Theme.LIGHT);
+      dispatch(setAppTheme(Theme.LIGHT));
+    }
+  };
+
+  const setBodyStyle = () => {
+    document.body.classList.add("bg-background-light");
+    document.body.classList.add("text-on-background-light");
+    document.body.classList.add("dark:bg-background-dark");
+    document.body.classList.add("dark:text-on-background-dark");
+  };
+
   useEffect(() => {
     checkUserSignIn();
   }, [isUserSignedIn]);
+
+  useEffect(() => {
+    setThemeFromLocalOrSystem();
+    setBodyStyle();
+  }, []);
 
   return getRoutes();
 }

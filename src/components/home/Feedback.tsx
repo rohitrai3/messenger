@@ -6,7 +6,7 @@ import {
   LikeIcon,
   LikeOutlineIcon,
   SpinnerIcon,
-} from "../../common/icons";
+} from "../../common/graphics";
 import { FeedbackAction } from "../../common/enums";
 import { FeedbackData } from "../../common/types";
 import { addFeedback } from "../../services/database";
