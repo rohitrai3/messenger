@@ -179,9 +179,7 @@ export const getMessages = async (sender: string, receiver: string) => {
     `${baseUrl}chat/get-messages?sender=${sender}&receiver=${receiver}`,
     {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: headers,
     }
   )
     .then((response) => {
@@ -195,6 +193,27 @@ export const getMessages = async (sender: string, receiver: string) => {
     });
 
   return messageDataList;
+};
+
+export const getChatName = async (sender: string, receiver: string) => {
+  var chatName = "";
+
+  await fetch(
+    `${baseUrl}chat/get-chat-name?sender=${sender}&receiver=${receiver}`,
+    {
+      method: "GET",
+      headers: headers,
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      chatName = data.chatName;
+    })
+    .catch((error) => {
+      console.log("error: ", error);
+    });
+
+  return chatName;
 };
 
 export const checkUidExist = async (uid: string) => {
