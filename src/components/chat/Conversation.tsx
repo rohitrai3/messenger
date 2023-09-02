@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { MessageData } from "../../common/types";
-import { getMessages } from "../../services/database";
+import { getChatName, getMessages } from "../../services/database";
 import { useAppSelector } from "../../hooks/hooks";
 import { SpinnerIcon } from "../../common/graphics";
+import startLiveChat from "../../services/pusher";
 
 export type ConversationProps = {
   connectionUsername: string;
@@ -23,6 +24,8 @@ export default function Conversation({
         message1.timestamp > message2.timestamp ? -1 : 1
       )
     );
+    const chatName = await getChatName(userUsername, connectionUsername);
+    startLiveChat(chatName, setMessages);
     setLoadingMessages(false);
   };
 
