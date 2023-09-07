@@ -45,7 +45,7 @@ export default function ChatFooter({ connectionUsername }: ChatFooterProps) {
     } else {
       return (
         <div
-          className="w-fit h-fit bg-primary-light dark:bg-primary-dark p-3 rounded-full ml-5"
+          className="w-fit h-fit bg-primary-light dark:bg-primary-dark p-3 rounded-full ml-5 cursor-pointer"
           onClick={() => sendMessage()}
           id="sendMessageButton"
         >
