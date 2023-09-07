@@ -58,7 +58,7 @@ export default function AddNew() {
   const sendConnectionRequestButton = () => {
     return (
       <div
-        className="bg-secondary-light dark:bg-secondary-dark rounded-full p-3"
+        className="bg-secondary-light dark:bg-secondary-dark rounded-full p-3 cursor-pointer"
         onClick={() => sendConnectionRequest()}
       >
         {TickIcon("fill-on-secondary-light dark:fill-on-secondary-dark")}
@@ -110,7 +110,7 @@ export default function AddNew() {
   const searchButton = () => {
     return (
       <div
-        className="w-fit h-fit bg-primary-light dark:bg-primary-dark rounded-full p-3 ml-5"
+        className="w-fit h-fit bg-primary-light dark:bg-primary-dark rounded-full p-3 ml-5 cursor-pointer"
         onClick={() => searchUser()}
       >
         {SearchIcon("fill-on-primary-light dark:fill-on-primary-dark")}

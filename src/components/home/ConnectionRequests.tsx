@@ -47,7 +47,7 @@ export default function ConnectionRequests() {
   ) => {
     return (
       <div
-        className="bg-secondary-light dark:bg-secondary-dark p-3 rounded-full"
+        className="bg-secondary-light dark:bg-secondary-dark p-3 rounded-full cursor-pointer"
         onClick={() => acceptSelectedConnectionRequest(requestId, username)}
       >
         {TickIcon("fill-on-secondary-light dark:fill-on-secondary-dark")}
