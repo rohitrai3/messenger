@@ -12,6 +12,7 @@ import {
 } from "../store/slices/userSlice";
 import { setAppTheme } from "../store/slices/appSlice";
 import { Theme } from "../common/enums";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   const isUserAuthenticated = useAppSelector(selectUserIsAuthenticated);
@@ -67,7 +68,12 @@ function App() {
     setBodyStyle();
   }, []);
 
-  return getRoutes();
+  return (
+    <>
+      <Analytics />
+      {getRoutes()}
+    </>
+  );
 }
 
 export default App;
