@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SpinnerIcon } from "../../common/graphics";
 import SignInForm, { SignInFormProps } from "./SignInForm";
 import SignInHeader from "./SignInHeader";
 import SignInFooter from "./SignInFooter";
-import { incrementVisitorCounter } from "../../services/analytics/database";
 import { DarkModeButton, LightModeButton } from "../../common/buttons";
 import { Theme } from "../../common/enums";
 import { useAppSelector } from "../../hooks/hooks";
@@ -21,20 +20,9 @@ export default function SignIn() {
     return authenticating ? SpinnerIcon : <SignInForm {...signInFormProps} />;
   };
 
-  const setVisitorCount = async () => {
-    if (!(localStorage.getItem("isMessengerVisited") === "true")) {
-      await incrementVisitorCounter("messenger");
-      localStorage.setItem("isMessengerVisited", "true");
-    }
-  };
-
   const getThemeButton = () => {
     return theme === Theme.LIGHT ? <LightModeButton /> : <DarkModeButton />;
   };
-
-  useEffect(() => {
-    setVisitorCount();
-  }, []);
 
   return (
     <div className="w-d-screen h-d-screen flex flex-col items-center p-4">
